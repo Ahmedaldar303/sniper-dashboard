@@ -2,8 +2,8 @@ name: Sniper Radar Auto-Update
 
 on:
   schedule:
-    - cron: '*/15 13-21 * * 1-5'
-  workflow_dispatch:
+    - cron: '*/15 13-21 * * 1-5' # يعمل كل 15 دقيقة وقت السوق
+  workflow_dispatch: # يخليك تشغله بيدك الحين
 
 jobs:
   update-dashboard:
