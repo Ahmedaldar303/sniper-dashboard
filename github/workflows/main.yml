@@ -2,14 +2,14 @@ name: Sniper Radar Auto-Update
 
 on:
   schedule:
-    - cron: '*/15 13-21 * * 1-5' # يعمل كل 15 دقيقة أثناء أوقات السوق
-  workflow_dispatch: # الزر الذي سيسمح لك بتشغيله يدوياً
+    - cron: '*/15 13-21 * * 1-5'
+  workflow_dispatch:
 
 jobs:
   update-dashboard:
     runs-on: ubuntu-latest
     permissions:
-      contents: write # إعطاء الروبوت صلاحية كتابة وتحديث ملف البيانات
+      contents: write
 
     steps:
       - name: Checkout repository
