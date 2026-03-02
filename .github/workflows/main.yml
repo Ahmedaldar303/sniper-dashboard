@@ -1,41 +1,31 @@
-name: Sniper Radar pro1 Auto-Update
+name: Sniper-Radar-Live
 
 on:
+  workflow_dispatch:
   schedule:
-    - cron: '*/15 13-21 * * 1-5' # يعمل كل 15 دقيقة وقت السوق
-  workflow_dispatch: # يتيح لك التشغيل اليدوي الآن
+    - cron: '*/15 13-21 * * 1-5'
 
 jobs:
-  update-dashboard:
+  run-bot:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
         with:
           python-version: '3.12'
-
-      - name: Install dependencies
-        run: |
-          pip install yfinance pandas numpy requests alpaca-py
-
-      - name: Run Sniper Scanner
+      - name: Install
+        run: pip install yfinance pandas numpy requests alpaca-py
+      - name: Scan
         env:
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
           CHAT_ID: ${{ secrets.CHAT_ID }}
           ALPACA_KEY: ${{ secrets.ALPACA_KEY }}
           ALPACA_SECRET: ${{ secrets.ALPACA_SECRET }}
         run: python scanner.py
-
-      - name: Commit and Push updates
+      - name: Push
         run: |
-          git config --global user.name "Sniper-Bot"
-          git config --global user.email "bot@sniper.local"
+          git config --global user.name "bot"
+          git config --global user.email "bot@bot.com"
           git add data.json
-          git commit -m "تحديث تلقائي لبيانات الداشبورد [skip ci]" || echo "لا توجد تغييرات"
+          git commit -m "update" || exit 0
           git push
