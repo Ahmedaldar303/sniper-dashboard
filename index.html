@@ -1,0 +1,1200 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SPX SCALPER PRO</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&display=swap');
+
+  :root {
+    --bg-deep: #020508;
+    --bg-panel: #060d14;
+    --bg-card: #0a1520;
+    --bg-hover: #0f1e2e;
+    --border: #0e2a3f;
+    --border-bright: #1a4060;
+    --accent-cyan: #00d4ff;
+    --accent-blue: #0088ff;
+    --accent-gold: #ffaa00;
+    --accent-green: #00ff88;
+    --accent-red: #ff3355;
+    --accent-purple: #8855ff;
+    --bull: #00e676;
+    --bear: #ff1744;
+    --bull-dim: rgba(0, 230, 118, 0.15);
+    --bear-dim: rgba(255, 23, 68, 0.15);
+    --text-primary: #e8f4ff;
+    --text-secondary: #6a9bbf;
+    --text-dim: #2a4a60;
+    --glow-cyan: 0 0 20px rgba(0, 212, 255, 0.4);
+    --glow-green: 0 0 20px rgba(0, 255, 136, 0.4);
+    --glow-red: 0 0 20px rgba(255, 51, 85, 0.4);
+    --glow-gold: 0 0 20px rgba(255, 170, 0, 0.4);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg-deep);
+    color: var(--text-primary);
+    font-family: 'Rajdhani', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: 
+      radial-gradient(ellipse 60% 40% at 20% 10%, rgba(0,100,200,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 60% at 80% 80%, rgba(0,200,100,0.04) 0%, transparent 60%),
+      repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(0,212,255,0.02) 40px),
+      repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(0,212,255,0.02) 40px);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container { position: relative; z-index: 1; padding: 12px; max-width: 1600px; margin: 0 auto; }
+
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    background: linear-gradient(135deg, rgba(0,30,50,0.9), rgba(2,8,14,0.95));
+    border: 1px solid var(--border-bright);
+    border-radius: 4px;
+    margin-bottom: 10px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .header::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent-cyan), var(--accent-blue), transparent);
+  }
+
+  .logo {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 22px;
+    font-weight: 900;
+    letter-spacing: 4px;
+    background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .logo span {
+    background: linear-gradient(135deg, var(--accent-gold), #ff8800);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .header-center { display: flex; align-items: center; gap: 20px; }
+
+  .live-badge {
+    display: flex; align-items: center; gap: 6px;
+    background: rgba(0,255,136,0.1);
+    border: 1px solid rgba(0,255,136,0.3);
+    padding: 4px 12px;
+    border-radius: 2px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--accent-green);
+    letter-spacing: 2px;
+  }
+
+  .live-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent-green);
+    animation: pulse-dot 1.2s ease-in-out infinite;
+    box-shadow: var(--glow-green);
+  }
+
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.7); }
+  }
+
+  .price-display { text-align: right; }
+
+  .price-big {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--accent-green);
+    text-shadow: var(--glow-green);
+    line-height: 1;
+    transition: color 0.3s;
+  }
+
+  .price-change {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    color: var(--accent-green);
+    letter-spacing: 1px;
+  }
+
+  .tf-bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    background: var(--bg-panel);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    margin-bottom: 10px;
+  }
+
+  .tf-label { font-size: 11px; color: var(--text-dim); letter-spacing: 2px; margin-right: 6px; text-transform: uppercase; font-family: 'Share Tech Mono', monospace; }
+
+  .tf-btn {
+    padding: 4px 14px;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.2s;
+    letter-spacing: 1px;
+  }
+
+  .tf-btn:hover, .tf-btn.active {
+    background: rgba(0,212,255,0.1);
+    border-color: var(--accent-cyan);
+    color: var(--accent-cyan);
+    box-shadow: 0 0 10px rgba(0,212,255,0.2);
+  }
+
+  .separator { width: 1px; height: 20px; background: var(--border); margin: 0 8px; }
+
+  .main-grid {
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: 10px;
+  }
+
+  .chart-panel {
+    background: var(--bg-panel);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .chart-panel::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, var(--accent-blue), var(--accent-cyan), transparent);
+  }
+
+  .chart-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .chart-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--text-secondary);
+  }
+
+  .ohlc-display {
+    display: flex;
+    gap: 16px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+  }
+
+  .ohlc-item { display: flex; gap: 4px; }
+  .ohlc-label { color: var(--text-dim); }
+  .ohlc-val { color: var(--text-primary); }
+
+  canvas#mainChart { display: block; width: 100%; }
+  canvas#rsiChart, canvas#volumeChart { display: block; width: 100%; }
+
+  .sub-chart-label {
+    padding: 4px 16px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 2px;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    background: rgba(0,0,0,0.3);
+  }
+
+  .right-panel { display: flex; flex-direction: column; gap: 10px; }
+
+  .signal-box {
+    background: var(--bg-panel);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .signal-box.bullish { border-color: rgba(0,230,118,0.4); box-shadow: 0 0 20px rgba(0,230,118,0.1); }
+  .signal-box.bearish { border-color: rgba(255,23,68,0.4); box-shadow: 0 0 20px rgba(255,23,68,0.1); }
+  .signal-box.neutral { border-color: rgba(255,170,0,0.3); }
+
+  .signal-header {
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .signal-header.bullish { background: linear-gradient(135deg, rgba(0,230,118,0.12), transparent); }
+  .signal-header.bearish { background: linear-gradient(135deg, rgba(255,23,68,0.12), transparent); }
+  .signal-header.neutral { background: linear-gradient(135deg, rgba(255,170,0,0.08), transparent); }
+
+  .signal-type {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 2px;
+  }
+
+  .signal-type.bullish { color: var(--bull); text-shadow: var(--glow-green); }
+  .signal-type.bearish { color: var(--bear); text-shadow: var(--glow-red); }
+  .signal-type.neutral { color: var(--accent-gold); text-shadow: var(--glow-gold); }
+
+  .confidence-ring {
+    width: 42px; height: 42px;
+    position: relative;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .confidence-ring svg { position: absolute; top: 0; left: 0; transform: rotate(-90deg); }
+
+  .confidence-val {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    z-index: 1;
+  }
+
+  .signal-body { padding: 12px 14px; }
+
+  .signal-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    font-size: 13px;
+  }
+
+  .signal-row:last-child { border-bottom: none; }
+  .signal-row-label { color: var(--text-secondary); letter-spacing: 1px; font-size: 11px; }
+  .signal-row-val { font-family: 'Share Tech Mono', monospace; font-size: 12px; }
+  .val-bull { color: var(--bull); }
+  .val-bear { color: var(--bear); }
+  .val-gold { color: var(--accent-gold); }
+  .val-cyan { color: var(--accent-cyan); }
+
+  .alerts-panel {
+    background: var(--bg-panel);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    flex: 1;
+  }
+
+  .panel-header {
+    padding: 8px 14px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .panel-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--text-secondary);
+  }
+
+  .alert-count {
+    background: rgba(255,51,85,0.2);
+    border: 1px solid rgba(255,51,85,0.4);
+    color: var(--bear);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 2px;
+    animation: pulse-count 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse-count {
+    0%, 100% { box-shadow: none; }
+    50% { box-shadow: var(--glow-red); }
+  }
+
+  .alerts-list { padding: 8px; max-height: 260px; overflow-y: auto; }
+  .alerts-list::-webkit-scrollbar { width: 3px; }
+  .alerts-list::-webkit-scrollbar-thumb { background: var(--border-bright); border-radius: 2px; }
+
+  .alert-item {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding: 7px 8px;
+    border-radius: 3px;
+    margin-bottom: 4px;
+    border-left: 2px solid transparent;
+    cursor: pointer;
+    transition: background 0.2s;
+    animation: slideIn 0.4s ease-out;
+  }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateX(10px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  .alert-item:hover { background: var(--bg-hover); }
+  .alert-item.alert-bull { border-color: var(--bull); background: var(--bull-dim); }
+  .alert-item.alert-bear { border-color: var(--bear); background: var(--bear-dim); }
+  .alert-item.alert-warn { border-color: var(--accent-gold); background: rgba(255,170,0,0.08); }
+  .alert-item.alert-info { border-color: var(--accent-cyan); background: rgba(0,212,255,0.06); }
+
+  .alert-icon { font-size: 13px; margin-top: 1px; flex-shrink: 0; }
+  .alert-content { flex: 1; }
+  .alert-title { font-size: 12px; font-weight: 600; color: var(--text-primary); letter-spacing: 0.5px; }
+  .alert-detail { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--text-secondary); margin-top: 2px; }
+  .alert-time { font-family: 'Share Tech Mono', monospace; font-size: 9px; color: var(--text-dim); flex-shrink: 0; }
+
+  .bottom-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 280px;
+    gap: 10px;
+    margin-top: 10px;
+  }
+
+  .metric-card {
+    background: var(--bg-panel);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 12px 16px;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: border-color 0.3s;
+  }
+
+  .metric-card:hover { border-color: var(--accent-cyan); }
+
+  .metric-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0;
+    height: 2px;
+    background: var(--accent-cyan);
+    transition: width 0.5s ease;
+    width: 0;
+  }
+
+  .metric-card:hover::after { width: 100%; }
+
+  .metric-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    color: var(--text-dim);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .metric-value {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .metric-sub {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--text-secondary);
+  }
+
+  .metric-bar {
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    margin-top: 8px;
+    overflow: hidden;
+  }
+
+  .metric-bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 1s ease;
+  }
+
+  .gamma-panel {
+    background: var(--bg-panel);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .gamma-level {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+    font-size: 12px;
+    transition: background 0.2s;
+  }
+
+  .gamma-level:hover { background: var(--bg-hover); }
+  .gamma-level.current { background: rgba(0,212,255,0.06); border-left: 2px solid var(--accent-cyan); }
+
+  .gamma-price { font-family: 'Share Tech Mono', monospace; color: var(--text-primary); font-size: 12px; }
+  .gamma-type { font-size: 10px; letter-spacing: 1px; padding: 2px 6px; border-radius: 2px; }
+  .gamma-type.wall { background: rgba(255,51,85,0.15); color: var(--bear); border: 1px solid rgba(255,51,85,0.3); }
+  .gamma-type.support { background: rgba(0,230,118,0.1); color: var(--bull); border: 1px solid rgba(0,230,118,0.3); }
+  .gamma-type.magnet { background: rgba(255,170,0,0.1); color: var(--accent-gold); border: 1px solid rgba(255,170,0,0.3); }
+  .gamma-bar-wrap { width: 60px; height: 4px; background: var(--border); border-radius: 2px; }
+  .gamma-bar-inner { height: 100%; border-radius: 2px; }
+
+  .notification {
+    position: fixed;
+    top: 20px; right: 20px;
+    min-width: 300px;
+    background: var(--bg-card);
+    border-radius: 4px;
+    padding: 14px 16px;
+    z-index: 1000;
+    transform: translateX(350px);
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .notification.show { transform: translateX(0); }
+  .notification.bull { border-left: 3px solid var(--bull); border-top: 1px solid rgba(0,230,118,0.3); border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); box-shadow: var(--glow-green); }
+  .notification.bear { border-left: 3px solid var(--bear); border-top: 1px solid rgba(255,23,68,0.3); border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); box-shadow: var(--glow-red); }
+  .notification.warn { border-left: 3px solid var(--accent-gold); border-top: 1px solid rgba(255,170,0,0.3); border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); box-shadow: var(--glow-gold); }
+
+  .notif-icon { font-size: 20px; flex-shrink: 0; }
+  .notif-title { font-family: 'Orbitron', sans-serif; font-size: 11px; letter-spacing: 1px; margin-bottom: 4px; }
+  .notif-body { font-family: 'Share Tech Mono', monospace; font-size: 11px; color: var(--text-secondary); }
+
+  ::-webkit-scrollbar { width: 4px; height: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border-bright); border-radius: 2px; }
+
+  .strategy-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 10px;
+    border-radius: 2px;
+    font-size: 11px;
+    font-family: 'Share Tech Mono', monospace;
+    letter-spacing: 1px;
+  }
+
+  .tag-call { background: rgba(0,230,118,0.12); border: 1px solid rgba(0,230,118,0.35); color: var(--bull); }
+  .tag-put { background: rgba(255,23,68,0.12); border: 1px solid rgba(255,23,68,0.35); color: var(--bear); }
+  .tag-ic { background: rgba(255,170,0,0.1); border: 1px solid rgba(255,170,0,0.35); color: var(--accent-gold); }
+  .tag-straddle { background: rgba(136,85,255,0.12); border: 1px solid rgba(136,85,255,0.35); color: var(--accent-purple); }
+
+  .pulse-ring { animation: ringPulse 2s ease-out infinite; }
+
+  @keyframes ringPulse {
+    0% { stroke-opacity: 1; }
+    100% { stroke-opacity: 0; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <div class="header">
+    <div class="logo">SPX<span>SCALPER</span> PRO</div>
+    <div class="header-center">
+      <div class="live-badge"><div class="live-dot"></div>LIVE</div>
+      <div style="display:flex;gap:8px" id="strategyTags">
+        <div class="strategy-tag tag-call">📈 CALL</div>
+      </div>
+    </div>
+    <div class="price-display">
+      <div class="price-big" id="mainPrice">5,284.75</div>
+      <div class="price-change" id="mainChange">▲ +18.50 (+0.35%)</div>
+    </div>
+  </div>
+
+  <div class="tf-bar">
+    <span class="tf-label">TIMEFRAME</span>
+    <button class="tf-btn" onclick="setTF(this,'1m')">1m</button>
+    <button class="tf-btn active" onclick="setTF(this,'2m')">2m</button>
+    <button class="tf-btn" onclick="setTF(this,'3m')">3m</button>
+    <button class="tf-btn" onclick="setTF(this,'5m')">5m</button>
+    <div class="separator"></div>
+    <span class="tf-label">INDICATORS</span>
+    <button class="tf-btn active" onclick="toggleIndicator(this,'vwap')">VWAP</button>
+    <button class="tf-btn active" onclick="toggleIndicator(this,'ema')">EMA 9/21</button>
+    <button class="tf-btn active" onclick="toggleIndicator(this,'gamma')">Γ LEVELS</button>
+    <button class="tf-btn active" onclick="toggleIndicator(this,'signals')">SIGNALS</button>
+    <div class="separator"></div>
+    <span class="tf-label" style="margin-left:auto;color:var(--accent-gold)" id="sessionTime">SESSION: 09:42:18</span>
+  </div>
+
+  <div class="main-grid">
+
+    <div class="chart-panel">
+      <div class="chart-header">
+        <span class="chart-title">SPX · CANDLESTICK · SCALP VIEW</span>
+        <div class="ohlc-display">
+          <div class="ohlc-item"><span class="ohlc-label">O</span><span class="ohlc-val" id="ohlcO">5271.20</span></div>
+          <div class="ohlc-item"><span class="ohlc-label">H</span><span class="ohlc-val" style="color:var(--bull)" id="ohlcH">5289.40</span></div>
+          <div class="ohlc-item"><span class="ohlc-label">L</span><span class="ohlc-val" style="color:var(--bear)" id="ohlcL">5268.10</span></div>
+          <div class="ohlc-item"><span class="ohlc-label">C</span><span class="ohlc-val" id="ohlcC">5284.75</span></div>
+          <div class="ohlc-item"><span class="ohlc-label">VOL</span><span class="ohlc-val" style="color:var(--accent-cyan)" id="ohlcV">1.24M</span></div>
+        </div>
+      </div>
+      <canvas id="mainChart" height="340"></canvas>
+      <div class="sub-chart-label">RSI (3) · SCALP MOMENTUM</div>
+      <canvas id="rsiChart" height="60"></canvas>
+      <div class="sub-chart-label">VOLUME · DELTA</div>
+      <canvas id="volumeChart" height="55"></canvas>
+    </div>
+
+    <div class="right-panel">
+
+      <div class="signal-box bullish" id="signalBox">
+        <div class="signal-header bullish" id="signalHeader">
+          <div>
+            <div style="font-size:9px;color:var(--text-dim);letter-spacing:2px;margin-bottom:3px">ACTIVE SIGNAL</div>
+            <div class="signal-type bullish" id="signalType">⬆ LONG CALL</div>
+          </div>
+          <div class="confidence-ring">
+            <svg width="42" height="42" viewBox="0 0 42 42">
+              <circle cx="21" cy="21" r="17" fill="none" stroke="rgba(0,230,118,0.15)" stroke-width="3"/>
+              <circle cx="21" cy="21" r="17" fill="none" stroke="#00e676" stroke-width="3" stroke-dasharray="107" stroke-dashoffset="22" stroke-linecap="round" id="confRing"/>
+              <circle cx="21" cy="21" r="17" fill="none" stroke="#00e676" stroke-width="3" stroke-dasharray="107" stroke-dashoffset="22" stroke-linecap="round" class="pulse-ring" id="confRingPulse"/>
+            </svg>
+            <span class="confidence-val" style="color:var(--bull)" id="confVal">79%</span>
+          </div>
+        </div>
+        <div class="signal-body">
+          <div class="signal-row">
+            <span class="signal-row-label">ENTRY ZONE</span>
+            <span class="signal-row-val val-cyan" id="sigEntry">5280 – 5284</span>
+          </div>
+          <div class="signal-row">
+            <span class="signal-row-label">TARGET 1</span>
+            <span class="signal-row-val val-bull" id="sigT1">5292 (+8)</span>
+          </div>
+          <div class="signal-row">
+            <span class="signal-row-label">TARGET 2</span>
+            <span class="signal-row-val val-bull" id="sigT2">5300 (+16)</span>
+          </div>
+          <div class="signal-row">
+            <span class="signal-row-label">STOP LOSS</span>
+            <span class="signal-row-val val-bear" id="sigSL">5272 (−12)</span>
+          </div>
+          <div class="signal-row">
+            <span class="signal-row-label">R:R RATIO</span>
+            <span class="signal-row-val val-gold" id="sigRR">1 : 2.1</span>
+          </div>
+          <div class="signal-row">
+            <span class="signal-row-label">STRATEGY</span>
+            <span class="signal-row-val" id="sigStrategy"><span class="strategy-tag tag-call">0DTE CALL</span></span>
+          </div>
+          <div class="signal-row">
+            <span class="signal-row-label">TRIGGER</span>
+            <span class="signal-row-val" style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-secondary)" id="sigTrigger">VWAP+EMA9 Cross + RSI(3)&lt;20</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="alerts-panel">
+        <div class="panel-header">
+          <span class="panel-title">ALERTS LOG</span>
+          <span class="alert-count" id="alertCount">3 NEW</span>
+        </div>
+        <div class="alerts-list" id="alertsList"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="bottom-grid">
+    <div class="metric-card">
+      <div class="metric-label">VIX · FEAR INDEX</div>
+      <div class="metric-value" id="vixVal" style="color:var(--accent-gold)">14.82</div>
+      <div class="metric-sub" id="vixStatus">LOW VOL · SELL PREMIUM</div>
+      <div class="metric-bar"><div class="metric-bar-fill" id="vixBar" style="width:29%;background:linear-gradient(90deg,var(--bull),var(--accent-gold))"></div></div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">IV RANK (30D)</div>
+      <div class="metric-value" id="ivrVal" style="color:var(--accent-cyan)">31%</div>
+      <div class="metric-sub" id="ivrStatus">NEUTRAL · MIXED SETUP</div>
+      <div class="metric-bar"><div class="metric-bar-fill" id="ivrBar" style="width:31%;background:linear-gradient(90deg,var(--accent-blue),var(--accent-cyan))"></div></div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">GEX REGIME</div>
+      <div class="metric-value" id="gexVal" style="color:var(--bull)">+2.1B</div>
+      <div class="metric-sub" id="gexStatus">POSITIVE · PINNING MODE</div>
+      <div class="metric-bar"><div class="metric-bar-fill" id="gexBar" style="width:62%;background:linear-gradient(90deg,var(--accent-blue),var(--bull))"></div></div>
+    </div>
+    <div class="gamma-panel">
+      <div class="panel-header">
+        <span class="panel-title">Γ GAMMA STRIKES</span>
+        <span style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text-dim)">KEY MAGNETS</span>
+      </div>
+      <div id="gammaLevels"></div>
+    </div>
+  </div>
+
+</div>
+
+<div class="notification" id="notification">
+  <div class="notif-icon" id="notifIcon">⚡</div>
+  <div>
+    <div class="notif-title" id="notifTitle">ALERT TRIGGERED</div>
+    <div class="notif-body" id="notifBody">Signal detected</div>
+  </div>
+</div>
+
+<script>
+const DPR = window.devicePixelRatio || 1;
+const PAD = { left: 8, right: 60, top: 14, bottom: 22 };
+const MAIN_H = 340, RSI_H = 60, VOL_H = 55;
+
+let basePrice = 5284.75;
+let currentPrice = basePrice;
+let bars = [];
+let indicators = { vwap: true, ema: true, gamma: true, signals: true };
+let alertsLog = [];
+let alertNewCount = 0;
+let tickCount = 0;
+let lastAlertTime = 0;
+let lastAlertType = null;
+let notifTimeout;
+let frameCount = 0;
+
+function generateBars(count, startPrice) {
+  const result = [];
+  let price = startPrice;
+  const now = Date.now();
+  const barMs = 120000;
+  for (let i = 0; i < count; i++) {
+    const trend = Math.sin(i * 0.18) * 8 + Math.sin(i * 0.07) * 15;
+    const volatility = 3 + Math.abs(Math.sin(i * 0.3)) * 8;
+    const open = price;
+    const move = (Math.random() - 0.47) * volatility + trend * 0.08;
+    const close = open + move;
+    const highExtra = Math.random() * volatility * 0.6;
+    const lowExtra = Math.random() * volatility * 0.6;
+    const high = Math.max(open, close) + highExtra;
+    const low = Math.min(open, close) - lowExtra;
+    const volume = 400000 + Math.random() * 1200000 + Math.abs(move) * 50000;
+    result.push({ t: now - (count - i) * barMs, o: +open.toFixed(2), h: +high.toFixed(2), l: +low.toFixed(2), c: +close.toFixed(2), v: Math.round(volume) });
+    price = close;
+  }
+  return result;
+}
+
+function calcVWAP(bars) {
+  let cumTP = 0, cumVol = 0;
+  return bars.map(b => { const tp = (b.h + b.l + b.c) / 3; cumTP += tp * b.v; cumVol += b.v; return cumTP / cumVol; });
+}
+
+function calcEMA(vals, period) {
+  const k = 2 / (period + 1);
+  let ema = [vals[0]];
+  for (let i = 1; i < vals.length; i++) ema.push(vals[i] * k + ema[i-1] * (1 - k));
+  return ema;
+}
+
+function calcRSI(closes, period = 3) {
+  if (closes.length < period + 1) return closes.map(() => 50);
+  const rsi = new Array(period).fill(50);
+  let gains = 0, losses = 0;
+  for (let i = 1; i <= period; i++) {
+    const diff = closes[i] - closes[i-1];
+    if (diff >= 0) gains += diff; else losses -= diff;
+  }
+  let avgG = gains / period, avgL = losses / period;
+  rsi.push(avgL === 0 ? 100 : 100 - (100 / (1 + avgG / avgL)));
+  for (let i = period + 1; i < closes.length; i++) {
+    const diff = closes[i] - closes[i-1];
+    const g = diff > 0 ? diff : 0;
+    const l = diff < 0 ? -diff : 0;
+    avgG = (avgG * (period - 1) + g) / period;
+    avgL = (avgL * (period - 1) + l) / period;
+    rsi.push(avgL === 0 ? 100 : 100 - (100 / (1 + avgG / avgL)));
+  }
+  return rsi;
+}
+
+function detectSignal(bars, vwap, ema9, ema21, rsi) {
+  const n = bars.length - 1;
+  if (n < 3) return null;
+  const c = bars[n].c, v = vwap[n];
+  const e9 = ema9[n], e9p = ema9[n-1], e21 = ema21[n], e21p = ema21[n-1];
+  const r = rsi[n];
+  if (c > v && e9 > e21 && e9p <= e21p && r < 40) return { dir: 'LONG', conf: 72 + Math.floor(Math.random() * 18) };
+  if (c > v && r < 20 && bars[n].l < bars[n-1].l && bars[n].c > bars[n-1].c) return { dir: 'LONG', conf: 78 + Math.floor(Math.random() * 15) };
+  if (c < v && e9 < e21 && e9p >= e21p && r > 60) return { dir: 'SHORT', conf: 70 + Math.floor(Math.random() * 18) };
+  if (c < v && r > 80 && bars[n].h > bars[n-1].h && bars[n].c < bars[n-1].c) return { dir: 'SHORT', conf: 75 + Math.floor(Math.random() * 15) };
+  return null;
+}
+
+function resizeCanvas(canvas, w, h) {
+  canvas.width = w * DPR; canvas.height = h * DPR;
+  canvas.style.width = w + 'px'; canvas.style.height = h + 'px';
+  const ctx = canvas.getContext('2d');
+  ctx.scale(DPR, DPR);
+  return ctx;
+}
+
+function drawMainChart() {
+  const canvas = document.getElementById('mainChart');
+  const w = canvas.parentElement.clientWidth - 2;
+  const ctx = resizeCanvas(canvas, w, MAIN_H);
+  const cw = w - PAD.left - PAD.right;
+  const ch = MAIN_H - PAD.top - PAD.bottom;
+
+  ctx.fillStyle = '#060d14';
+  ctx.fillRect(0, 0, w, MAIN_H);
+
+  const closes = bars.map(b => b.c);
+  const vwap = calcVWAP(bars);
+  const ema9 = calcEMA(closes, 9);
+  const ema21 = calcEMA(closes, 21);
+  const rsi = calcRSI(closes, 3);
+  const visible = bars.slice(-40);
+  const visV = vwap.slice(-40);
+  const visE9 = ema9.slice(-40);
+  const visE21 = ema21.slice(-40);
+
+  const highs = visible.map(b => b.h);
+  const lows = visible.map(b => b.l);
+  const minPrice = Math.min(...lows) - 3;
+  const maxPrice = Math.max(...highs) + 3;
+  const pRange = maxPrice - minPrice;
+
+  const px = (i) => PAD.left + (i + 0.5) * (cw / visible.length);
+  const py = (p) => PAD.top + ch - ((p - minPrice) / pRange) * ch;
+
+  ctx.strokeStyle = 'rgba(14,42,63,0.8)';
+  ctx.lineWidth = 1;
+  for (let i = 0; i <= 6; i++) {
+    const y = PAD.top + (ch / 6) * i;
+    ctx.beginPath(); ctx.moveTo(PAD.left, y); ctx.lineTo(w - PAD.right, y); ctx.stroke();
+    const price = maxPrice - (pRange / 6) * i;
+    ctx.fillStyle = '#2a4a60'; ctx.font = '9px Share Tech Mono'; ctx.textAlign = 'left';
+    ctx.fillText(price.toFixed(0), w - PAD.right + 4, y + 3);
+  }
+
+  if (indicators.gamma) {
+    const gammaLvls = getGammaLevels();
+    gammaLvls.forEach(g => {
+      if (g.price >= minPrice && g.price <= maxPrice) {
+        const y = py(g.price);
+        ctx.beginPath(); ctx.setLineDash([4, 4]);
+        ctx.strokeStyle = g.type === 'wall' ? 'rgba(255,51,85,0.35)' : g.type === 'support' ? 'rgba(0,230,118,0.35)' : 'rgba(255,170,0,0.4)';
+        ctx.lineWidth = g.type === 'magnet' ? 1.5 : 1;
+        ctx.moveTo(PAD.left, y); ctx.lineTo(w - PAD.right, y); ctx.stroke(); ctx.setLineDash([]);
+        ctx.fillStyle = g.type === 'wall' ? 'rgba(255,51,85,0.8)' : g.type === 'support' ? 'rgba(0,230,118,0.8)' : 'rgba(255,170,0,0.9)';
+        ctx.font = 'bold 9px Share Tech Mono'; ctx.textAlign = 'right';
+        ctx.fillText(`${g.price} ${g.label}`, w - PAD.right - 2, y - 2);
+      }
+    });
+  }
+
+  if (indicators.vwap) {
+    ctx.beginPath(); ctx.strokeStyle = '#ff8800'; ctx.lineWidth = 1.8;
+    ctx.shadowColor = 'rgba(255,136,0,0.4)'; ctx.shadowBlur = 4;
+    visV.forEach((v, i) => { if (i === 0) ctx.moveTo(px(i), py(v)); else ctx.lineTo(px(i), py(v)); });
+    ctx.stroke(); ctx.shadowBlur = 0;
+    const lastVwap = visV[visV.length - 1];
+    ctx.fillStyle = '#ff8800'; ctx.font = 'bold 9px Share Tech Mono'; ctx.textAlign = 'left';
+    ctx.fillText('VWAP', w - PAD.right + 4, py(lastVwap) + 3);
+  }
+
+  if (indicators.ema) {
+    [{ data: visE9, color: '#00d4ff' }, { data: visE21, color: '#8855ff' }].forEach((e, idx) => {
+      ctx.beginPath(); ctx.strokeStyle = e.color; ctx.lineWidth = 1.4;
+      ctx.shadowColor = e.color; ctx.shadowBlur = 3;
+      e.data.forEach((v, i) => { if (i === 0) ctx.moveTo(px(i), py(v)); else ctx.lineTo(px(i), py(v)); });
+      ctx.stroke(); ctx.shadowBlur = 0;
+      const last = e.data[e.data.length - 1];
+      ctx.fillStyle = e.color; ctx.font = 'bold 9px Share Tech Mono'; ctx.textAlign = 'left';
+      ctx.fillText(idx === 0 ? 'E9' : 'E21', w - PAD.right + 4, py(last) + 3);
+    });
+  }
+
+  const barW = Math.max(4, (cw / visible.length) * 0.65);
+  visible.forEach((b, i) => {
+    const x = px(i);
+    const isBull = b.c >= b.o;
+    const bodyTop = py(Math.max(b.o, b.c));
+    const bodyBot = py(Math.min(b.o, b.c));
+    const bodyH = Math.max(1, bodyBot - bodyTop);
+
+    ctx.strokeStyle = isBull ? 'rgba(0,230,118,0.5)' : 'rgba(255,23,68,0.5)';
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(x, py(b.h)); ctx.lineTo(x, bodyTop);
+    ctx.moveTo(x, bodyBot); ctx.lineTo(x, py(b.l)); ctx.stroke();
+
+    const grad = ctx.createLinearGradient(x - barW/2, bodyTop, x + barW/2, bodyBot);
+    if (isBull) { grad.addColorStop(0, 'rgba(0,230,118,0.9)'); grad.addColorStop(1, 'rgba(0,150,80,0.8)'); }
+    else { grad.addColorStop(0, 'rgba(255,23,68,0.9)'); grad.addColorStop(1, 'rgba(180,0,40,0.8)'); }
+    ctx.fillStyle = grad;
+    ctx.fillRect(x - barW/2, bodyTop, barW, bodyH);
+    ctx.strokeStyle = isBull ? '#00e676' : '#ff1744';
+    ctx.lineWidth = 0.5;
+    ctx.strokeRect(x - barW/2, bodyTop, barW, bodyH);
+  });
+
+  if (indicators.signals) {
+    const sig = detectSignal(bars, vwap, ema9, ema21, rsi);
+    if (sig) {
+      const i = visible.length - 1;
+      const b = visible[i];
+      const x = px(i);
+      if (sig.dir === 'LONG') {
+        const y = py(b.l) + 14;
+        ctx.fillStyle = '#00e676'; ctx.shadowColor = '#00e676'; ctx.shadowBlur = 12;
+        ctx.beginPath(); ctx.moveTo(x, py(b.l) + 2); ctx.lineTo(x - 7, y); ctx.lineTo(x + 7, y); ctx.closePath(); ctx.fill();
+        ctx.font = 'bold 10px Orbitron'; ctx.fillStyle = '#00e676'; ctx.textAlign = 'center';
+        ctx.fillText('BUY', x, y + 12); ctx.shadowBlur = 0;
+      } else {
+        const y = py(b.h) - 14;
+        ctx.fillStyle = '#ff1744'; ctx.shadowColor = '#ff1744'; ctx.shadowBlur = 12;
+        ctx.beginPath(); ctx.moveTo(x, py(b.h) - 2); ctx.lineTo(x - 7, y); ctx.lineTo(x + 7, y); ctx.closePath(); ctx.fill();
+        ctx.font = 'bold 10px Orbitron'; ctx.fillStyle = '#ff1744'; ctx.textAlign = 'center';
+        ctx.fillText('SELL', x, y - 4); ctx.shadowBlur = 0;
+      }
+      updateSignalBox(sig, b, currentPrice);
+    }
+  }
+
+  const cp = currentPrice;
+  if (cp >= minPrice && cp <= maxPrice) {
+    const y = py(cp);
+    ctx.beginPath(); ctx.setLineDash([3, 3]); ctx.strokeStyle = 'rgba(0,212,255,0.7)'; ctx.lineWidth = 1;
+    ctx.moveTo(PAD.left, y); ctx.lineTo(w - PAD.right, y); ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle = '#00d4ff'; ctx.fillRect(w - PAD.right, y - 8, PAD.right, 16);
+    ctx.fillStyle = '#020508'; ctx.font = 'bold 10px Share Tech Mono'; ctx.textAlign = 'center';
+    ctx.fillText(cp.toFixed(2), w - PAD.right + 30, y + 4);
+  }
+
+  ctx.fillStyle = '#2a4a60'; ctx.font = '8px Share Tech Mono'; ctx.textAlign = 'center';
+  [0, 10, 20, 30, 39].forEach(i => {
+    if (i < visible.length) {
+      const t = new Date(visible[i].t);
+      ctx.fillText(`${t.getHours().toString().padStart(2,'0')}:${t.getMinutes().toString().padStart(2,'0')}`, px(i), MAIN_H - 5);
+    }
+  });
+}
+
+function drawRSI() {
+  const canvas = document.getElementById('rsiChart');
+  const w = canvas.parentElement.clientWidth - 2;
+  const ctx = resizeCanvas(canvas, w, RSI_H);
+  const cw = w - PAD.left - PAD.right;
+  const ch = RSI_H - 4;
+
+  ctx.fillStyle = '#060d14'; ctx.fillRect(0, 0, w, RSI_H);
+
+  const closes = bars.map(b => b.c);
+  const rsi = calcRSI(closes, 3).slice(-40);
+  const px = (i) => PAD.left + (i + 0.5) * (cw / rsi.length);
+  const py = (v) => 2 + ch - (v / 100) * ch;
+
+  ctx.fillStyle = 'rgba(255,51,85,0.06)'; ctx.fillRect(PAD.left, py(80), cw, py(100) - py(80));
+  ctx.fillStyle = 'rgba(0,230,118,0.06)'; ctx.fillRect(PAD.left, py(20), cw, py(0) - py(20));
+
+  [20, 50, 80].forEach(v => {
+    ctx.strokeStyle = v === 50 ? 'rgba(255,170,0,0.2)' : 'rgba(14,42,63,0.8)';
+    ctx.lineWidth = 1; ctx.setLineDash(v === 50 ? [3,3] : []);
+    ctx.beginPath(); ctx.moveTo(PAD.left, py(v)); ctx.lineTo(w - PAD.right, py(v)); ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle = '#2a4a60'; ctx.font = '8px Share Tech Mono'; ctx.textAlign = 'left';
+    ctx.fillText(v, w - PAD.right + 3, py(v) + 3);
+  });
+
+  ctx.beginPath();
+  rsi.forEach((v, i) => { if (i === 0) ctx.moveTo(px(i), py(v)); else ctx.lineTo(px(i), py(v)); });
+  ctx.strokeStyle = '#00d4ff'; ctx.lineWidth = 1.5; ctx.stroke();
+
+  rsi.forEach((v, i) => {
+    if (v < 20 || v > 80) {
+      ctx.beginPath(); ctx.arc(px(i), py(v), 3, 0, Math.PI * 2);
+      ctx.fillStyle = v < 20 ? '#00e676' : '#ff1744';
+      ctx.shadowColor = v < 20 ? '#00e676' : '#ff1744'; ctx.shadowBlur = 8;
+      ctx.fill(); ctx.shadowBlur = 0;
+    }
+  });
+
+  const lastRSI = rsi[rsi.length - 1];
+  ctx.fillStyle = lastRSI < 20 ? '#00e676' : lastRSI > 80 ? '#ff1744' : '#00d4ff';
+  ctx.font = 'bold 9px Share Tech Mono'; ctx.textAlign = 'left';
+  ctx.fillText(`RSI: ${lastRSI.toFixed(1)}`, w - PAD.right + 3, 14);
+}
+
+function drawVolume() {
+  const canvas = document.getElementById('volumeChart');
+  const w = canvas.parentElement.clientWidth - 2;
+  const ctx = resizeCanvas(canvas, w, VOL_H);
+  const cw = w - PAD.left - PAD.right;
+  const ch = VOL_H - 8;
+
+  ctx.fillStyle = '#060d14'; ctx.fillRect(0, 0, w, VOL_H);
+
+  const visible = bars.slice(-40);
+  const maxVol = Math.max(...visible.map(b => b.v));
+  const barW = Math.max(3, (cw / visible.length) * 0.65);
+  const px = (i) => PAD.left + (i + 0.5) * (cw / visible.length);
+
+  visible.forEach((b, i) => {
+    const h = Math.max(1, (b.v / maxVol) * ch);
+    const isBull = b.c >= b.o;
+    const grad = ctx.createLinearGradient(0, VOL_H - h, 0, VOL_H);
+    grad.addColorStop(0, isBull ? 'rgba(0,230,118,0.6)' : 'rgba(255,23,68,0.6)');
+    grad.addColorStop(1, isBull ? 'rgba(0,100,50,0.2)' : 'rgba(100,0,20,0.2)');
+    ctx.fillStyle = grad;
+    ctx.fillRect(px(i) - barW/2, VOL_H - 4 - h, barW, h);
+  });
+
+  const avgVol = visible.reduce((s, b) => s + b.v, 0) / visible.length;
+  const avgY = VOL_H - 4 - (avgVol / maxVol) * ch;
+  ctx.strokeStyle = 'rgba(255,170,0,0.5)'; ctx.lineWidth = 1; ctx.setLineDash([4,4]);
+  ctx.beginPath(); ctx.moveTo(PAD.left, avgY); ctx.lineTo(w - PAD.right, avgY); ctx.stroke(); ctx.setLineDash([]);
+
+  const lastVol = visible[visible.length - 1].v;
+  ctx.fillStyle = '#2a4a60'; ctx.font = '8px Share Tech Mono'; ctx.textAlign = 'left';
+  ctx.fillText(`${(lastVol/1000).toFixed(0)}K`, w - PAD.right + 3, 12);
+}
+
+function getGammaLevels() {
+  const cp = currentPrice;
+  return [
+    { price: Math.round(cp / 50) * 50 + 50, type: 'wall', label: 'WALL', strength: 85 },
+    { price: Math.round(cp / 25) * 25 + 25, type: 'wall', label: 'RES', strength: 60 },
+    { price: Math.round(cp / 25) * 25, type: 'magnet', label: 'MAGNET', strength: 90 },
+    { price: Math.round(cp / 25) * 25 - 25, type: 'support', label: 'SUPP', strength: 70 },
+    { price: Math.round(cp / 50) * 50 - 50, type: 'support', label: 'MAJOR', strength: 88 },
+  ].sort((a, b) => b.price - a.price);
+}
+
+function renderGammaLevels() {
+  const container = document.getElementById('gammaLevels');
+  const levels = getGammaLevels();
+  container.innerHTML = levels.map(g => {
+    const isCurrent = Math.abs(g.price - currentPrice) < 15;
+    return `<div class="gamma-level ${isCurrent ? 'current' : ''}">
+      <span class="gamma-price">${g.price.toFixed(0)}</span>
+      <span class="gamma-type ${g.type}">${g.label}</span>
+      <div class="gamma-bar-wrap"><div class="gamma-bar-inner" style="width:${g.strength}%;background:${g.type==='wall'?'var(--bear)':g.type==='support'?'var(--bull)':'var(--accent-gold)'}"></div></div>
+    </div>`;
+  }).join('');
+}
+
+function updateSignalBox(sig, bar, price) {
+  const isLong = sig.dir === 'LONG';
+  document.getElementById('signalBox').className = `signal-box ${isLong ? 'bullish' : 'bearish'}`;
+  document.getElementById('signalHeader').className = `signal-header ${isLong ? 'bullish' : 'bearish'}`;
+  const type = document.getElementById('signalType');
+  type.className = `signal-type ${isLong ? 'bullish' : 'bearish'}`;
+  type.textContent = isLong ? '⬆ LONG CALL' : '⬇ SHORT PUT';
+  document.getElementById('confVal').textContent = sig.conf + '%';
+  document.getElementById('confVal').style.color = isLong ? 'var(--bull)' : 'var(--bear)';
+  const ring = document.getElementById('confRing');
+  ring.setAttribute('stroke-dashoffset', (107 - (sig.conf / 100) * 107).toFixed(0));
+  ring.setAttribute('stroke', isLong ? '#00e676' : '#ff1744');
+  const t1 = isLong ? price + 8 : price - 8;
+  const t2 = isLong ? price + 16 : price - 16;
+  const sl = isLong ? price - 12 : price + 12;
+  document.getElementById('sigEntry').textContent = `${(price-4).toFixed(0)} – ${price.toFixed(0)}`;
+  document.getElementById('sigT1').textContent = `${t1.toFixed(0)} (${isLong?'+':'−'}8)`;
+  document.getElementById('sigT2').textContent = `${t2.toFixed(0)} (${isLong?'+':'−'}16)`;
+  document.getElementById('sigSL').textContent = `${sl.toFixed(0)} (${isLong?'−':'+'}12)`;
+  document.getElementById('sigRR').textContent = `1 : ${(16/12).toFixed(1)}`;
+  document.getElementById('sigStrategy').innerHTML = `<span class="strategy-tag ${isLong?'tag-call':'tag-put'}">${isLong?'0DTE CALL':'0DTE PUT'}</span>`;
+  document.getElementById('sigTrigger').textContent = isLong ? 'VWAP+EMA9 Cross + RSI(3)<20' : 'VWAP Break + RSI(3)>80';
+  document.getElementById('strategyTags').innerHTML = `<div class="strategy-tag ${isLong?'tag-call':'tag-put'}">${isLong?'📈 CALL':'📉 PUT'}</div>`;
+}
+
+const ALERT_TEMPLATES = [
+  { type: 'bull', icon: '🟢', title: 'VWAP Reclaim', detail: () => `SPX back above VWAP at ${currentPrice.toFixed(2)}` },
+  { type: 'bear', icon: '🔴', title: 'VWAP Break', detail: () => `SPX lost VWAP support — ${currentPrice.toFixed(2)}` },
+  { type: 'bull', icon: '⬆', title: 'EMA9 × EMA21 Cross UP', detail: () => `Bullish crossover confirmed at ${currentPrice.toFixed(2)}` },
+  { type: 'bear', icon: '⬇', title: 'EMA9 × EMA21 Cross DOWN', detail: () => `Bearish crossover — momentum shift` },
+  { type: 'bull', icon: '💚', title: 'RSI(3) Oversold — LONG', detail: () => `RSI(3) hit ${(10+Math.random()*9).toFixed(1)} — reversal zone` },
+  { type: 'bear', icon: '❤️', title: 'RSI(3) Overbought — SHORT', detail: () => `RSI(3) hit ${(82+Math.random()*8).toFixed(1)} — fade setup` },
+  { type: 'warn', icon: '⚡', title: 'Gamma Level Approach', detail: () => `Price near key gamma strike ${Math.round(currentPrice/25)*25}` },
+  { type: 'info', icon: '📊', title: 'Volume Surge Detected', detail: () => `Volume 2.3x above average — institutional flow` },
+  { type: 'warn', icon: '⏰', title: 'Gamma Hour Starting', detail: () => `3:00 PM — Max volatility window opens` },
+  { type: 'bull', icon: '🎯', title: 'Opening Range Breakout', detail: () => `ORB High breached at ${currentPrice.toFixed(2)}` },
+];
+
+function addAlert(template) {
+  const now = new Date();
+  const time = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}:${now.getSeconds().toString().padStart(2,'0')}`;
+  alertsLog.unshift({ ...template, time, detail: template.detail() });
+  if (alertsLog.length > 20) alertsLog.pop();
+  alertNewCount++;
+  renderAlerts();
+  showNotification(alertsLog[0]);
+}
+
+function renderAlerts() {
+  document.getElementById('alertsList').innerHTML = alertsLog.map((a, i) =>
+    `<div class="alert-item alert-${a.type}" style="animation-delay:${i*0.05}s">
+      <span class="alert-icon">${a.icon}</span>
+      <div class="alert-content">
+        <div class="alert-title">${a.title}</div>
+        <div class="alert-detail">${a.detail}</div>
+      </div>
+      <span class="alert-time">${a.time}</span>
+    </div>`
+  ).join('');
+  document.getElementById('alertCount').textContent = alertNewCount > 0 ? `${alertNewCount} NEW` : 'LOG';
+}
+
+function showNotification(item) {
+  const notif = document.getElementById('notification');
+  document.getElementById('notifIcon').textContent = item.icon;
+  document.getElementById('notifTitle').textContent = item.title;
+  document.getElementById('notifBody').textContent = item.detail;
+  notif.className = `notification ${item.type === 'bull' ? 'bull' : item.type === 'bear' ? 'bear' : 'warn'} show`;
+  clearTimeout(notifTimeout);
+  notifTimeout = setTimeout(() => notif.classList.remove('show'), 4000);
+}
+
+function updateMetrics() {
+  const vix = 13 + Math.sin(Date.now() / 30000) * 3 + Math.random() * 0.5;
+  const ivr = 25 + Math.sin(Date.now() / 45000) * 15 + Math.random() * 3;
+  const gex = 1.5 + Math.sin(Date.now() / 60000) * 2;
+
+  document.getElementById('vixVal').textContent = vix.toFixed(2);
+  document.getElementById('vixStatus').textContent = vix < 15 ? 'LOW VOL · SELL PREMIUM' : vix < 20 ? 'NORMAL · MIXED' : 'HIGH VOL · BUY PREMIUM';
+  document.getElementById('vixVal').style.color = vix < 15 ? 'var(--accent-gold)' : vix > 20 ? 'var(--bear)' : 'var(--text-primary)';
+  document.getElementById('vixBar').style.width = Math.min(100, vix * 3) + '%';
+
+  document.getElementById('ivrVal').textContent = ivr.toFixed(0) + '%';
+  document.getElementById('ivrStatus').textContent = ivr > 50 ? 'HIGH IV · SELL SETUP' : ivr < 25 ? 'LOW IV · BUY SETUP' : 'NEUTRAL · MIXED SETUP';
+  document.getElementById('ivrBar').style.width = ivr + '%';
+
+  const gexPos = gex > 0;
+  document.getElementById('gexVal').textContent = (gex > 0 ? '+' : '') + gex.toFixed(1) + 'B';
+  document.getElementById('gexStatus').textContent = gexPos ? 'POSITIVE · PINNING MODE' : 'NEGATIVE · EXPLOSIVE';
+  document.getElementById('gexVal').style.color = gexPos ? 'var(--bull)' : 'var(--bear)';
+  document.getElementById('gexBar').style.width = Math.abs(gex) * 20 + '%';
+}
+
+function tick() {
+  tickCount++;
+  const now = Date.now();
+  const momentum = Math.sin(now / 8000) * 0.8;
+  const noise = (Math.random() - 0.5) * 1.8;
+  currentPrice += momentum + noise + (Math.random() - 0.5) * 0.4;
+  currentPrice = Math.max(5200, Math.min(5380, currentPrice));
+
+  if (tickCount % 30 === 0) {
+    const last = bars[bars.length - 1];
+    bars.push({ t: now, o: last.c, h: last.c + Math.random() * 5, l: last.c - Math.random() * 5, c: currentPrice, v: Math.round(400000 + Math.random() * 800000) });
+    if (bars.length > 100) bars.shift();
+  } else {
+    const last = bars[bars.length - 1];
+    last.c = currentPrice; last.h = Math.max(last.h, currentPrice); last.l = Math.min(last.l, currentPrice);
+  }
+
+  const change = currentPrice - basePrice;
+  const changePct = (change / basePrice) * 100;
+  const priceEl = document.getElementById('mainPrice');
+  priceEl.textContent = currentPrice.toFixed(2);
+  priceEl.style.color = change >= 0 ? 'var(--bull)' : 'var(--bear)';
+  priceEl.style.textShadow = change >= 0 ? 'var(--glow-green)' : 'var(--glow-red)';
+  document.getElementById('mainChange').textContent = `${change >= 0 ? '▲' : '▼'} ${Math.abs(change).toFixed(2)} (${Math.abs(changePct).toFixed(2)}%)`;
+  document.getElementById('mainChange').style.color = change >= 0 ? 'var(--bull)' : 'var(--bear)';
+
+  const last = bars[bars.length - 1];
+  document.getElementById('ohlcO').textContent = last.o.toFixed(2);
+  document.getElementById('ohlcH').textContent = last.h.toFixed(2);
+  document.getElementById('ohlcL').textContent = last.l.toFixed(2);
+  document.getElementById('ohlcC').textContent = last.c.toFixed(2);
+  document.getElementById('ohlcV').textContent = (last.v / 1000000).toFixed(2) + 'M';
+
+  if (now - lastAlertTime > 8000 + Math.random() * 15000) {
+    const closes = bars.map(b => b.c);
+    const vwap = calcVWAP(bars);
+    const rsi = calcRSI(closes, 3);
+    const rsiNow = rsi[rsi.length - 1];
+    let tpl = null;
+    if (rsiNow < 18 && lastAlertType !== 'rsi_bull') { tpl = ALERT_TEMPLATES[4]; lastAlertType = 'rsi_bull'; }
+    else if (rsiNow > 82 && lastAlertType !== 'rsi_bear') { tpl = ALERT_TEMPLATES[5]; lastAlertType = 'rsi_bear'; }
+    else if (Math.abs(currentPrice - vwap[vwap.length-1]) < 2 && lastAlertType !== 'vwap') { tpl = Math.random() > 0.5 ? ALERT_TEMPLATES[0] : ALERT_TEMPLATES[1]; lastAlertType = 'vwap'; }
+    else if (Math.random() < 0.4) { tpl = [ALERT_TEMPLATES[6], ALERT_TEMPLATES[7], ALERT_TEMPLATES[2], ALERT_TEMPLATES[3]][Math.floor(Math.random()*4)]; lastAlertType = 'other'; }
+    if (tpl) { addAlert(tpl); lastAlertTime = now; }
+  }
+
+  const t = new Date();
+  document.getElementById('sessionTime').textContent = `SESSION: ${t.getHours().toString().padStart(2,'0')}:${t.getMinutes().toString().padStart(2,'0')}:${t.getSeconds().toString().padStart(2,'0')}`;
+}
+
+function setTF(btn, tf) {
+  document.querySelectorAll('.tf-btn').forEach(b => { if (['1m','2m','3m','5m'].includes(b.textContent)) b.classList.remove('active'); });
+  btn.classList.add('active');
+  bars = generateBars(55, currentPrice - 10);
+}
+
+function toggleIndicator(btn, key) {
+  indicators[key] = !indicators[key];
+  btn.classList.toggle('active');
+}
+
+function loop() {
+  tick(); frameCount++;
+  drawMainChart();
+  if (frameCount % 2 === 0) drawRSI();
+  if (frameCount % 3 === 0) drawVolume();
+  if (frameCount % 10 === 0) renderGammaLevels();
+  if (frameCount % 15 === 0) updateMetrics();
+  setTimeout(loop, 500);
+}
+
+window.addEventListener('load', () => {
+  bars = generateBars(55, basePrice - 30);
+  setTimeout(() => addAlert(ALERT_TEMPLATES[9]), 500);
+  setTimeout(() => addAlert(ALERT_TEMPLATES[6]), 1800);
+  setTimeout(() => addAlert(ALERT_TEMPLATES[2]), 3200);
+  renderGammaLevels();
+  updateMetrics();
+  loop();
+});
+
+window.addEventListener('resize', () => { drawMainChart(); drawRSI(); drawVolume(); });
+</script>
+</body>
+</html>
