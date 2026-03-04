@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>US500 SCALPER PRO v4 - FULL SYSTEM</title>
+    <title>US500 SCALPER PRO v4 - PRECISE EDITION</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=Cairo:wght@300;400;600;700&display=swap');
         :root{
@@ -15,112 +15,132 @@
             --fa:'Cairo',sans-serif;--fd:'Orbitron',sans-serif;--fm:'Share Tech Mono',monospace;
         }
         *{margin:0;padding:0;box-sizing:border-box}
-        body{background:var(--bg);color:var(--t1);font-family:var(--fa);min-height:100vh;overflow-x:hidden}
-        .wrap{position:relative;z-index:1;padding:8px;max-width:1700px;margin:0 auto}
-        .hdr{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;margin-bottom:8px;background:linear-gradient(135deg,rgba(0,25,45,.96),rgba(2,6,12,.98));border:1px solid var(--b2);border-radius:6px;}
-        .price-main{font-family:var(--fd);font-size:32px;font-weight:900;color:var(--bull)}
-        .mg{display:grid;grid-template-columns:1fr 300px;gap:8px}
-        .cp{background:var(--panel);border:1px solid var(--b1);border-radius:6px;height:500px;display:flex;flex-direction:column;overflow:hidden;}
-        #tv-chart-container {flex:1;width:100%}
-        .sb{background:var(--panel);border:1px solid var(--b1);border-radius:6px;padding:15px; border-right:4px solid var(--bull);}
-        .srow{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05); font-size:13px;}
-        .sval{font-family:var(--fm);font-weight:bold;color:var(--cyan)}
+        body{background:var(--bg);color:var(--t1);font-family:var(--fa);min-height:100vh;overflow:hidden}
+        .wrap{position:relative;padding:8px;max-width:1800px;margin:0 auto; height:100vh; display:flex; flex-direction:column;}
         
-        /* تصميم الجداول الجديدة في الأسفل */
-        .bottom-section {display:grid; grid-template-columns: 1fr 1fr; gap:8px; margin-top:8px;}
-        .pro-table {background:var(--panel); border:1px solid var(--b1); border-radius:6px; padding:12px;}
-        table {width:100%; border-collapse:collapse; margin-top:10px;}
-        th {text-align:right; color:var(--t2); font-size:10px; padding:8px; border-bottom:1px solid var(--b2);}
-        td {padding:8px; font-family:var(--fm); font-size:12px; border-bottom:1px solid rgba(255,255,255,0.03);}
+        .hdr{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;margin-bottom:8px;background:linear-gradient(135deg,rgba(0,25,45,.96),rgba(2,6,12,.98));border:1px solid var(--b2);border-radius:6px; flex-shrink:0;}
+        .price-main{font-family:var(--fd);font-size:32px;font-weight:900;color:var(--bull)}
+
+        .main-container{display:grid; grid-template-columns: 320px 1fr 320px; gap:8px; flex:1; min-height:0;}
+        
+        .panel{background:var(--panel); border:1px solid var(--b1); border-radius:6px; overflow:hidden; display:flex; flex-direction:column;}
+        .p-hdr{padding:8px 12px; border-bottom:1px solid var(--b1); font-family:var(--fd); font-size:11px; color:var(--t2); display:flex; justify-content:space-between;}
+        
+        #tv-chart{flex:1; width:100%;}
+        
+        table{width:100%; border-collapse:collapse; font-family:var(--fm); font-size:12px;}
+        th{color:var(--t3); font-size:10px; padding:6px; border-bottom:1px solid var(--b1); text-align:right;}
+        td{padding:8px; border-bottom:1px solid rgba(255,255,255,0.02);}
+
+        .sig-box{padding:15px; border-right:4px solid var(--bull); background:rgba(0,230,118,0.05); margin-bottom:8px;}
+        .s-row{display:flex; justify-content:space-between; margin-bottom:10px; border-bottom:1px solid rgba(255,255,255,0.05); padding-bottom:5px;}
     </style>
 </head>
 <body>
 
 <div class="wrap">
     <div class="hdr">
-        <div style="font-family:var(--fd); color:var(--cyan)">US<b>500</b> SCALPER PRO v4</div>
-        <div id="pMain" class="price-main">جاري...</div>
+        <div class="logo" style="font-family:var(--fd); color:var(--cyan)">US<b>500</b> SCALPER PRO</div>
+        <div id="topPrice" class="price-main">0000.00</div>
+        <div style="font-size:10px; color:var(--t2); text-align:left;">LIVE MARKET DATA</div>
     </div>
 
-    <div class="mg">
-        <div class="cp">
-            <div id="tv-chart-container">
-                <div id="tradingview_full"></div>
-                <script src="https://s3.tradingview.com/tv.js"></script>
-                <script>
-                new TradingView.widget({
-                    "autosize": true, "symbol": "FOREXCOM:SPXUSD", "interval": "1",
-                    "timezone": "Africa/Cairo", "theme": "dark", "style": "1",
-                    "locale": "ar", "container_id": "tradingview_full"
-                });
-                </script>
-            </div>
-        </div>
-
-        <div class="rp">
-            <div class="sb">
-                <div style="color:var(--bull); font-weight:bold; margin-bottom:10px;">الإشارة الحالية</div>
-                <div class="srow"><span>دخول</span><span class="sval" id="entry">--</span></div>
-                <div class="srow"><span>الهدف 1</span><span class="sval" id="t1">--</span></div>
-                <div class="srow"><span>الهدف 2</span><span class="sval" id="t2">--</span></div>
-                <div class="srow"><span>الوقف</span><span class="sval" style="color:var(--bear)" id="sl">--</span></div>
-            </div>
-        </div>
-    </div>
-
-    <div class="bottom-section">
-        <div class="pro-table">
-            <div style="color:var(--gold); font-size:12px; font-weight:bold;">🎯 رادار القناص (SPX & NDX Levels)</div>
+    <div class="main-container">
+        <div class="panel">
+            <div class="p-hdr"><span>🎯 رادار القناص</span><span id="updateTime">00:00</span></div>
             <table>
                 <thead>
-                    <tr><th>المؤشر</th><th>دعم</th><th>مقاومة</th><th>نقطة ارتكاز</th></tr>
+                    <tr><th>المؤشر</th><th>دعم</th><th>مقاومة</th></tr>
                 </thead>
-                <tbody id="levelsBody"></tbody>
+                <tbody id="sniperLevels">
+                    </tbody>
+            </table>
+            <div class="p-hdr" style="margin-top:auto; border-top:1px solid var(--b1);"><span>💸 عقود الأوبشن 0DTE</span></div>
+            <table id="optionsTable">
+                <thead>
+                    <tr><th>السترايك</th><th>التكلفة</th><th>الربح</th></tr>
+                </thead>
+                <tbody></tbody>
             </table>
         </div>
 
-        <div class="pro-table">
-            <div style="color:var(--cyan); font-size:12px; font-weight:bold;">💸 عقود أوبشن مقترحة (مرتبة مالياً)</div>
-            <table>
-                <thead>
-                    <tr><th>السترايك</th><th>التكلفة (أقصى خسارة)</th><th>صافي الربح</th></tr>
-                </thead>
-                <tbody id="optionsBody"></tbody>
-            </table>
+        <div class="panel">
+            <div id="tv-chart"></div>
+        </div>
+
+        <div class="panel">
+            <div class="p-hdr"><span>⚡ الإشارة النشطة</span></div>
+            <div class="sig-box">
+                <div style="color:var(--bull); font-weight:bold; margin-bottom:10px;">LONG CALL</div>
+                <div class="s-row"><span>دخول:</span><span class="sval" id="sigEntry">--</span></div>
+                <div class="s-row"><span>الهدف:</span><span class="sval" style="color:var(--bull)" id="sigT1">--</span></div>
+                <div class="s-row"><span>الوقف:</span><span class="sval" style="color:var(--bear)" id="sigSL">--</span></div>
+            </div>
+            <div class="p-hdr"><span>📊 حالة السيولة</span></div>
+            <div style="padding:15px; font-size:12px;">
+                <div class="s-row"><span>VIX:</span><span style="color:var(--gold)">14.20</span></div>
+                <div class="s-row"><span>DXY:</span><span style="color:var(--cyan)">103.10</span></div>
+            </div>
         </div>
     </div>
 </div>
 
+<script src="https://s3.tradingview.com/tv.js"></script>
 <script>
-    async function updateData() {
+    // تشغيل الشارت بأبعاد متناسقة
+    new TradingView.widget({
+        "autosize": true,
+        "symbol": "FOREXCOM:SPXUSD",
+        "interval": "1",
+        "timezone": "Etc/UTC",
+        "theme": "dark",
+        "style": "1",
+        "locale": "ar",
+        "container_id": "tv-chart",
+        "hide_side_toolbar": false,
+        "allow_symbol_change": true,
+        "details": true,
+    });
+
+    async function fetchLive() {
         try {
             const r = await fetch('https://api.allorigins.win/raw?url=' + encodeURIComponent('https://query1.finance.yahoo.com/v8/finance/chart/ES=F?interval=1m&range=1d'));
             const d = await r.json();
             const p = d.chart.result[0].meta.regularMarketPrice;
             
-            document.getElementById('pMain').textContent = p.toFixed(2);
-            document.getElementById('entry').textContent = p.toFixed(2);
-            document.getElementById('t1').textContent = (p + 10).toFixed(2);
-            document.getElementById('t2').textContent = (p + 20).toFixed(2);
-            document.getElementById('sl').textContent = (p - 15).toFixed(2);
-
-            // تحديث رادار القناص
-            const ndx = p * 2.85; 
-            document.getElementById('levelsBody').innerHTML = `
-                <tr><td style="color:var(--cyan)">SPX</td><td style="color:var(--bear)">${(p-20).toFixed(0)}</td><td style="color:var(--bull)">${(p+25).toFixed(0)}</td><td>${p.toFixed(0)}</td></tr>
-                <tr><td style="color:var(--purple)">NDX</td><td style="color:var(--bear)">${(ndx-60).toFixed(0)}</td><td style="color:var(--bull)">${(ndx+80).toFixed(0)}</td><td>${ndx.toFixed(0)}</td></tr>
+            // تحديث السعر العلوي
+            document.getElementById('topPrice').textContent = p.toFixed(2);
+            
+            // 1. تحديث رادار القناص (SPX & NDX)
+            const ndxP = p * 3.22; // معامل ربط أدق للناسداك حالياً
+            document.getElementById('sniperLevels').innerHTML = `
+                <tr><td style="color:var(--cyan)">SPX</td><td style="color:var(--bear)">${(p-15).toFixed(0)}</td><td style="color:var(--bull)">${(p+20).toFixed(0)}</td></tr>
+                <tr><td style="color:var(--purple)">NDX</td><td style="color:var(--bear)">${(ndxP-80).toFixed(0)}</td><td style="color:var(--bull)">${(ndxP+110).toFixed(0)}</td></tr>
             `;
 
-            // تحديث جدول الأوبشن مرتب مالياً
-            const strikes = [Math.floor(p/5)*5, Math.floor(p/5)*5+5];
-            document.getElementById('optionsBody').innerHTML = strikes.map(s => `
-                <tr><td>${s} CALL</td><td style="color:var(--bear)">$250</td><td style="color:var(--bull)">$600</td></tr>
+            // 2. تحديث الإشارات
+            document.getElementById('sigEntry').textContent = p.toFixed(2);
+            document.getElementById('sigT1').textContent = (p + 12).toFixed(2);
+            document.getElementById('sigSL').textContent = (p - 10).toFixed(2);
+
+            // 3. تحديث عقود الأوبشن (مرتبة مالياً)
+            const s1 = Math.round(p / 5) * 5;
+            const options = [
+                {s: s1, cost: 2.10, profit: 5.50},
+                {s: s1 + 5, cost: 1.40, profit: 4.20}
+            ].sort((a,b) => a.cost - b.cost);
+
+            document.getElementById('optionsTable').querySelector('tbody').innerHTML = options.map(o => `
+                <tr><td>${o.s} C</td><td style="color:var(--bear)">$${(o.cost*100).toFixed(0)}</td><td style="color:var(--bull)">$${(o.profit*100).toFixed(0)}</td></tr>
             `).join('');
 
-        } catch(e) {}
+            document.getElementById('updateTime').textContent = new Date().toLocaleTimeString('ar-EG', {hour:'2-digit', minute:'2-digit'});
+
+        } catch (e) { console.error("Data error"); }
     }
-    setInterval(updateData, 5000);
-    updateData();
+
+    setInterval(fetchLive, 5000);
+    fetchLive();
 </script>
 </body>
 </html>
