@@ -3,7 +3,7 @@
 <head> 
 <meta charset="UTF-8"> 
 <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
-<title>US500 SCALPER PRO v4 - INSTITUTIONAL</title> 
+<title>US500 SCALPER PRO - RESPONSIVE</title> 
 <style> 
 @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=Cairo:wght@300;400;600;700&display=swap'); 
 :root{ 
@@ -11,260 +11,209 @@
     --b1:#0e2a3f;--b2:#1a4060; 
     --cyan:#00d4ff;--blue:#0088ff;--gold:#ffaa00; 
     --bull:#00e676;--bear:#ff1744;--purple:#8855ff; 
-    --bd:rgba(0,230,118,.15);--rd:rgba(255,23,68,.15); 
     --t1:#e8f4ff;--t2:#6a9bbf;--t3:#2a4a60; 
-    --gg:0 0 20px rgba(0,255,136,.4);--gr:0 0 20px rgba(255,51,85,.4); 
     --fm:'Share Tech Mono',monospace;--fd:'Orbitron',sans-serif;--fa:'Cairo',sans-serif; 
 } 
 *{margin:0;padding:0;box-sizing:border-box} 
-body{background:var(--bg);color:var(--t1);font-family:var(--fa);min-height:100vh;overflow-x:hidden} 
-.wrap{position:relative;z-index:1;padding:8px;max-width:1700px;margin:0 auto} 
-.hdr{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px; padding:10px 16px;margin-bottom:8px; background:linear-gradient(135deg,rgba(0,25,45,.96),rgba(2,6,12,.98)); border:1px solid var(--b2);border-radius:6px;position:relative;} 
-.logo{font-family:var(--fd);font-size:16px;font-weight:900;letter-spacing:2px; color:var(--cyan);} 
+body{background:var(--bg);color:var(--t1);font-family:var(--fa);min-height:100vh;} 
+.wrap{padding:10px; max-width:1800px; margin:0 auto;} 
+
+/* Header */
+.hdr{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;margin-bottom:10px;background:linear-gradient(135deg,rgba(0,25,45,.96),rgba(2,6,12,.98));border:1px solid var(--b2);border-radius:8px;} 
+.logo{font-family:var(--fd);font-size:18px;font-weight:900;color:var(--cyan);} 
 .logo b{color:var(--gold);} 
-.hdr-mid{display:flex;align-items:center;gap:8px;flex-wrap:wrap} 
-.bdg{display:flex;align-items:center;gap:5px;padding:3px 10px;border-radius:2px;font-size:10px} 
-.blv{background:rgba(0,255,136,.1);border:1px solid rgba(0,255,136,.3);color:#00ff88} 
-.bsrc{border:1px solid rgba(0,212,255,.4);background:rgba(0,212,255,.08);color:var(--cyan);font-family:var(--fm);font-size:9px;} 
-.dot{width:5px;height:5px;border-radius:50%;background:#00ff88;animation:bl 1.2s ease-in-out infinite;box-shadow:var(--gg)} 
-@keyframes bl{0%,100%{opacity:1}50%{opacity:.3}} 
-.stag{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:2px;font-size:10px;font-family:var(--fm)} 
-.tc2{background:rgba(0,230,118,.12);border:1px solid rgba(0,230,118,.35);color:var(--bull)} 
-.price-box{text-align:left} 
-.price-main{font-family:var(--fd);font-size:38px;font-weight:900;line-height:1; color:var(--bull);text-shadow:var(--gg);} 
-.price-chg{font-size:13px;color:var(--bull);margin-top:3px;font-family:var(--fm)} 
+.price-main{font-family:var(--fd);font-size:32px;font-weight:900;color:var(--bull); text-shadow:0 0 10px rgba(0,230,118,.3);} 
 
-.tb{display:flex;align-items:center;gap:5px;flex-wrap:wrap; padding:7px 12px;margin-bottom:8px; background:var(--panel);border:1px solid var(--b1);border-radius:6px} 
-.tl{font-family:var(--fm);font-size:9px;color:var(--t3);letter-spacing:2px} 
-.btn{padding:3px 11px;background:transparent;border:1px solid var(--b1);color:var(--t2); font-family:var(--fm);font-size:10px;cursor:pointer;border-radius:2px} 
-.btn.on{background:rgba(0,212,255,.1);border-color:var(--cyan);color:var(--cyan);box-shadow:0 0 8px rgba(0,212,255,.2)} 
-.sep{width:1px;height:16px;background:var(--b1);margin:0 5px} 
-.sclock{font-family:var(--fm);font-size:11px;color:var(--gold);margin-right:auto} 
+/* Responsive Dashboard Grid */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 300px 1fr 300px;
+    gap: 12px;
+}
 
-.mg{display:grid;grid-template-columns:1fr 290px;gap:8px} 
-.cp{background:var(--panel);border:1px solid var(--b1);border-radius:6px;position:relative;display:flex;flex-direction:column} 
-.chdr{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;border-bottom:1px solid var(--b1)} 
-.ctitle{font-family:var(--fd);font-size:10px;letter-spacing:3px;color:var(--t2)} 
+/* Mobile View Adjustments */
+@media (max-width: 1024px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+    .tv-wrap {
+        height: 500px !important; /* تثبيت طول الشارت في الجوال */
+    }
+}
 
-.tv-wrap {flex: 1; min-height: 450px; height: 550px; width: 100%; resize: vertical; overflow: hidden; position: relative; padding-bottom: 5px;}
+/* Panels */
+.panel{background:var(--panel); border:1px solid var(--b1); border-radius:8px; display:flex; flex-direction:column; overflow:hidden;} 
+.p-hdr{padding:10px 12px; background:rgba(0,0,0,0.4); border-bottom:1px solid var(--b1); font-family:var(--fa); font-weight:700; font-size:12px; color:var(--cyan); display:flex; justify-content:space-between; align-items:center;} 
 
-.rp{display:flex;flex-direction:column;gap:8px} 
-.sb{background:var(--panel);border:1px solid var(--b1);border-radius:6px;overflow:hidden} 
-.sb.bull{border-color:rgba(0,230,118,.45);box-shadow:0 0 18px rgba(0,230,118,.1)} 
-.sighdr{padding:10px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--b1)} 
-.sighdr.bull{background:linear-gradient(135deg,rgba(0,230,118,.12),transparent)} 
-.sigtype{font-family:var(--fd);font-size:13px;font-weight:700;letter-spacing:2px} 
-.sigtype.bull{color:var(--bull)} 
-.sbody{padding:10px 14px} 
-.srow{display:flex;justify-content:space-between;align-items:center; padding:5px 0;border-bottom:1px solid rgba(255,255,255,.04)} 
-.slbl2{color:var(--t2);font-size:10px;font-family:var(--fa)} 
-.sval2{font-family:var(--fm);font-size:12px;font-weight:600} 
-.vg{color:var(--bull)}.vr{color:var(--bear)}.vc{color:var(--cyan)}
+.tv-wrap {width:100%; height:600px; position:relative;}
 
-.alp{background:var(--panel);border:1px solid var(--b1);border-radius:6px;flex:1; overflow:hidden;} 
-.phdr{padding:7px 12px;border-bottom:1px solid var(--b1);display:flex;align-items:center;justify-content:space-between} 
-.ptitle{font-family:var(--fd);font-size:9px;letter-spacing:3px;color:var(--t2)} 
+/* Tables & Rows */
+table{width:100%; border-collapse:collapse; font-family:var(--fm); font-size:12px; text-align:center;} 
+th{color:var(--t2); font-size:10px; padding:8px; border-bottom:1px solid var(--b1); font-family:var(--fa);} 
+td{padding:8px; border-bottom:1px solid rgba(255,255,255,0.02);} 
+.s-row{display:flex; justify-content:space-between; align-items:center; padding:8px 12px; border-bottom:1px solid rgba(255,255,255,0.03); font-size:12px;} 
+.sval{font-family:var(--fm);font-weight:bold;color:var(--t1);} 
 
-.botgrid{display:grid;grid-template-columns:repeat(5,1fr) 290px;gap:8px;margin-top:8px} 
-.mc{background:var(--panel);border:1px solid var(--b1);border-radius:6px;padding:10px 14px} 
-.mlbl{font-family:var(--fm);font-size:8px;color:var(--t3);letter-spacing:2px;margin-bottom:6px} 
-.mval{font-family:var(--fd);font-size:18px;font-weight:700;margin-bottom:4px} 
-.np{background:var(--panel);border:1px solid rgba(0,212,255,.25);border-radius:6px} 
-.nrow{display:flex;align-items:center;justify-content:space-between;padding:5px 12px;border-bottom:1px solid rgba(255,255,255,.03)} 
-.nrl{font-family:var(--fa);font-size:10px;color:var(--t2)} 
-.nrv{font-family:var(--fm);font-size:11px;color:var(--t1)} 
-
-.row2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px} 
-.pro-table{background:var(--panel);border:1px solid var(--b1);border-radius:6px;padding:12px;}
-table{width:100%; border-collapse:collapse; margin-top:5px; font-family:var(--fm); font-size:11px;}
-th{text-align:right; color:var(--t2); padding:6px; border-bottom:1px solid var(--b2); font-family:var(--fa); font-size:10px;}
-td{padding:8px; border-bottom:1px solid rgba(255,255,255,0.03);}
+/* Components */
+.sig-box{padding:15px; border-right:4px solid var(--bull); background:rgba(0,230,118,0.05);}
+.mtf-box{display:flex; justify-content:space-between; padding:10px;}
+.mtf-item{text-align:center; flex:1; border-right:1px solid var(--b1);}
+.mtf-item:last-child{border:none;}
+.mtf-lbl{font-size:10px; color:var(--t2); margin-bottom:4px;}
+.mtf-val{font-family:var(--fd); font-size:14px; font-weight:bold;}
+.badge{padding:3px 6px; border-radius:3px; font-size:10px; font-family:var(--fm);}
 </style> 
 </head> 
 <body> 
+
 <div class="wrap"> 
     <div class="hdr"> 
-        <div class="logo">US<b>500</b> SCALPER PRO v4</div> 
-        <div class="hdr-mid"> 
-            <div class="bdg blv"><div class="dot"></div><span>مباشر</span></div> 
-            <div class="bdg bsrc" id="srcBadge">✅ ES Futures</div> 
-        </div> 
-        <div class="price-box"> 
-            <div class="price-main" id="pMain">جاري...</div> 
-            <div class="price-chg" id="pChg">--</div> 
-        </div> 
+        <div class="logo">US<b>500</b> SCALPER PRO</div> 
+        <div style="text-align:center;">
+            <div id="topPrice" class="price-main">0000.00</div>
+            <div style="font-size:10px; color:var(--t2); font-family:var(--fm);">LIVE DATA</div>
+        </div>
+        <div style="text-align:left; font-family:var(--fm); font-size:12px; color:var(--gold);" id="sclk">--:--:--</div>
     </div> 
 
-    <div style="background:var(--panel);border:1px solid var(--b2);border-radius:6px;padding:6px;margin-bottom:8px;border-top:2px solid var(--cyan)"> 
-        <div class="tradingview-widget-container"> 
-            <div class="tradingview-widget-container__widget"></div> 
-            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async> 
-            {"symbols":[{"proName":"FOREXCOM:SPXUSD","title":"US500"},{"proName":"NASDAQ:NDX","title":"NASDAQ"},{"proName":"CBOE:VIX","title":"VIX"}],"showSymbolLogo":true,"isTransparent":true,"displayMode":"compact","colorTheme":"dark","locale":"en"} 
-            </script> 
-        </div> 
-    </div> 
+    <div class="dashboard-grid"> 
+        <div class="col"> 
+            <div class="panel" style="margin-bottom:12px;"> 
+                <div class="p-hdr"><span>⚡ الإشارة النشطة</span></div> 
+                <div class="sig-box">
+                    <div style="color:var(--bull); font-weight:bold; margin-bottom:10px;">⬆ شراء كول (CALL)</div>
+                    <div class="s-row" style="padding:4px 0;"><span>منطقة الدخول</span><span class="sval" id="sEntry">--</span></div>
+                    <div class="s-row" style="padding:4px 0;"><span>🎯 الهدف الأول</span><span class="sval" style="color:var(--bull)" id="sT1">--</span></div>
+                    <div class="s-row" style="padding:4px 0; border:none;"><span>🛑 وقف الخسارة</span><span class="sval" style="color:var(--bear)" id="sSL">--</span></div>
+                </div>
+            </div>
 
-    <div class="tb"> 
-        <span class="tl">الإطار الزمني</span> 
-        <button class="btn on">1m</button><button class="btn">5m</button> 
-        <div class="sep"></div> 
-        
-        <span class="tl">توافق الفريمات:</span>
-        <span class="stag tc2">5m: صاعد</span>
-        <span class="stag tc2">15m: صاعد</span>
-        <span class="stag" style="color:var(--gold); border:1px solid var(--gold); background:rgba(255,170,0,0.1)">30m: محايد</span>
-        
-        <div class="sep"></div> 
-        <span class="sclock" id="sclk">--:--:--</span> 
-    </div> 
+            <div class="panel" style="margin-bottom:12px;"> 
+                <div class="p-hdr"><span>📈 توافق الفريمات (MTF)</span></div> 
+                <div class="mtf-box">
+                    <div class="mtf-item"><div class="mtf-lbl">5m</div><div class="mtf-val" style="color:var(--bull)">BUY</div></div>
+                    <div class="mtf-item"><div class="mtf-lbl">15m</div><div class="mtf-val" style="color:var(--bull)">BUY</div></div>
+                    <div class="mtf-item"><div class="mtf-lbl">30m</div><div class="mtf-val" style="color:var(--gold)">NEUT</div></div>
+                </div>
+            </div>
 
-    <div class="mg"> 
-        <div class="cp"> 
-            <div class="chdr"> 
-                <span class="ctitle">US500 · شارت TradingView المباشر (اسحب للتكبير من الأسفل)</span> 
-            </div> 
-            <div class="tv-wrap">
-                <div id="tv_chart" style="height:100%;width:100%"></div>
-                <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
-                <script type="text/javascript">
-                new TradingView.widget({
-                    "autosize": true, "symbol": "FOREXCOM:SPXUSD", "interval": "1",
-                    "timezone": "Asia/Riyadh", "theme": "dark", "style": "1",
-                    "locale": "ar", "enable_publishing": false,
-                    "hide_side_toolbar": false, "allow_symbol_change": true,
-                    "container_id": "tv_chart"
-                });
-                </script>
+            <div class="panel"> 
+                <div class="p-hdr"><span>🩸 أحشاء السوق (Internals)</span></div> 
+                <div class="s-row"><span>$TICK (زخم الشراء)</span><span class="sval" style="color:var(--bull)">+450</span></div>
+                <div class="s-row"><span>$ADD (توازن السيولة)</span><span class="sval" style="color:var(--cyan)">+1200</span></div>
+                <div class="s-row" style="border:none;"><span>VIX (مؤشر الخوف)</span><span class="sval" style="color:var(--gold)">14.20</span></div>
             </div>
         </div> 
 
-        <div class="rp"> 
-            <div class="sb bull" id="sigBox"> 
-                <div class="sighdr bull"> 
-                    <div><div style="font-size:8px;color:var(--t3);margin-bottom:3px">الإشارة الحالية</div><div class="sigtype bull">⬆ شراء كول</div></div> 
-                </div> 
-                <div class="sbody"> 
-                    <div class="srow"><span class="slbl2">الدخول</span><span class="sval2 vc" id="sEntry">--</span></div> 
-                    <div class="srow"><span class="slbl2">🎯 الهدف 1</span><span class="sval2 vg" id="sT1">--</span></div> 
-                    <div class="srow"><span class="slbl2">🎯 الهدف 2</span><span class="sval2 vg" id="sT2">--</span></div> 
-                    <div class="srow"><span class="slbl2">🛑 الوقف</span><span class="sval2 vr" id="sSL">--</span></div> 
-                </div> 
-            </div> 
-
-            <div class="alp" style="flex:none;"> 
-                <div class="phdr"><span class="ptitle">مستويات غاما</span></div> 
-                <div style="padding:10px;">
-                    <div class="srow"><span>جدار مقاومة</span><span style="color:var(--bear)" id="gw1">--</span></div>
-                    <div class="srow"><span>نقطة الارتكاز</span><span style="color:var(--gold)" id="gz">--</span></div>
-                    <div class="srow"><span>جدار دعم</span><span style="color:var(--bull)" id="gw2">--</span></div>
-                </div>
-            </div> 
-            
-            <div class="alp"> 
-                <div class="phdr"><span class="ptitle">سجل التنبيهات</span></div> 
-                <div style="padding:10px; font-size:11px; color:var(--t2);">بانتظار الإشارات...</div> 
+        <div class="col"> 
+            <div class="panel tv-wrap"> 
+                <div class="p-hdr"><span>📡 الشارت المباشر</span></div>
+                <div id="tv-chart" style="height:100%; width:100%;"></div>
             </div> 
         </div> 
-    </div> 
 
-    <div class="botgrid"> 
-        <div class="mc"><div class="mlbl">VIX · الخوف</div><div class="mval" style="color:var(--gold)">14.20</div></div> 
-        <div class="mc"><div class="mlbl">IV RANK</div><div class="mval" style="color:var(--cyan)">35%</div></div> 
-        <div class="mc"><div class="mlbl">$TICK اللحظي</div><div class="mval" style="color:var(--bull)">+450</div></div> 
-        <div class="mc"><div class="mlbl">$ADD السيولة</div><div class="mval" style="color:var(--bull)">+1200</div></div> 
-        <div class="np"> 
-            <div class="phdr" style="border-color:var(--b1)"><span class="ptitle">النطاق اليومي</span></div> 
-            <div class="nrow"><span class="nrl">دعم</span><span class="nrv" style="color:var(--bear)" id="dl">--</span></div>
-            <div class="nrow"><span class="nrl">مقاومة</span><span class="nrv" style="color:var(--bull)" id="dh">--</span></div>
+        <div class="col"> 
+            <div class="panel" style="margin-bottom:12px;"> 
+                <div class="p-hdr"><span>🎯 رادار القناص (الدعم والمقاومة)</span></div> 
+                <table> 
+                    <thead style="background:rgba(0,0,0,0.2);">
+                        <tr><th style="text-align:center;">المؤشر</th><th style="text-align:center;">الدعم</th><th style="text-align:center;">المقاومة</th></tr>
+                    </thead> 
+                    <tbody id="sniperLevels"></tbody> 
+                </table> 
+            </div>
+
+            <div class="panel" style="margin-bottom:12px;"> 
+                <div class="p-hdr"><span>💸 عقود الأوبشن (مرتبة مالياً)</span></div> 
+                <table> 
+                    <thead style="background:rgba(0,0,0,0.2);"> 
+                        <tr>
+                            <th style="text-align:center;">السترايك</th>
+                            <th style="text-align:center;">التكلفة (أقصى خسارة)</th>
+                            <th style="text-align:center;">صافي الربح</th>
+                        </tr> 
+                    </thead> 
+                    <tbody id="optionsTable"></tbody> 
+                </table> 
+            </div>
+
+            <div class="panel"> 
+                <div class="p-hdr"><span>🧱 جدران غاما اللحظية</span></div> 
+                <div class="s-row"><span>Call Wall (مقاومة)</span><span class="badge" style="background:rgba(255,23,68,0.15); color:var(--bear); border:1px solid var(--bear);" id="gw1">--</span></div>
+                <div class="s-row"><span>Zero Gamma (محور)</span><span class="badge" style="background:rgba(255,170,0,0.15); color:var(--gold); border:1px solid var(--gold);" id="gz">--</span></div>
+                <div class="s-row" style="border:none;"><span>Put Wall (دعم)</span><span class="badge" style="background:rgba(0,230,118,0.15); color:var(--bull); border:1px solid var(--bull);" id="gw2">--</span></div>
+            </div>
         </div> 
     </div> 
+</div> 
 
-    <div class="row2">
-        <div class="pro-table">
-            <div class="phdr" style="padding:0 0 8px 0; margin-bottom:8px;"><span class="ptitle" style="color:var(--cyan)">💸 عقود الأوبشن (0DTE)</span></div>
-            <table id="optionsTable">
-                <thead>
-                    <tr>
-                        <th style="text-align:center;">السترايكات</th>
-                        <th style="text-align:center;">التكلفة (أقصى خسارة)</th>
-                        <th style="text-align:center;">صافي الربح</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-        </div>
-        <div class="pro-table">
-             <div class="phdr" style="padding:0 0 8px 0; margin-bottom:8px;"><span class="ptitle" style="color:var(--gold)">🎯 مستويات القناص</span></div>
-             <table>
-                <thead><tr><th>المؤشر</th><th>الدعم</th><th>المقاومة</th></tr></thead>
-                <tbody id="sniperLvl"></tbody>
-             </table>
-        </div>
-    </div>
-</div>
+<script src="https://s3.tradingview.com/tv.js"></script> 
+<script> 
+    new TradingView.widget({ 
+        "autosize": true, 
+        "symbol": "FOREXCOM:SPXUSD", 
+        "interval": "5", 
+        "timezone": "Asia/Riyadh", 
+        "theme": "dark", 
+        "style": "1", 
+        "locale": "ar", 
+        "container_id": "tv-chart", 
+        "hide_side_toolbar": false, 
+        "allow_symbol_change": true
+    }); 
 
-<script>
-async function fetchPrice() {
-    try {
-        const r = await fetch('https://api.allorigins.win/raw?url=' + encodeURIComponent('https://query1.finance.yahoo.com/v8/finance/chart/ES=F?interval=1m&range=1d'));
-        const d = await r.json();
-        const price = d.chart.result[0].meta.regularMarketPrice;
-        const prev = d.chart.result[0].meta.chartPreviousClose;
-        const chg = price - prev;
-        const pct = (chg / prev) * 100;
+    async function fetchLive() { 
+        try { 
+            const r = await fetch('https://api.allorigins.win/raw?url=' + encodeURIComponent('https://query1.finance.yahoo.com/v8/finance/chart/ES=F?interval=1m&range=1d')); 
+            const d = await r.json(); 
+            const p = d.chart.result[0].meta.regularMarketPrice; 
+             
+            document.getElementById('topPrice').textContent = p.toFixed(2); 
 
-        const pm = document.getElementById('pMain');
-        pm.textContent = price.toFixed(2);
-        pm.style.color = chg >= 0 ? 'var(--bull)' : 'var(--bear)';
-        
-        document.getElementById('pChg').textContent = `${chg >= 0 ? '▲' : '▼'} ${Math.abs(chg).toFixed(2)} (${Math.abs(pct).toFixed(2)}%)`;
-        document.getElementById('pChg').style.color = chg >= 0 ? 'var(--bull)' : 'var(--bear)';
+            // تحديث الإشارات
+            document.getElementById('sEntry').textContent = p.toFixed(2);
+            document.getElementById('sT1').textContent = (p + 12).toFixed(2);
+            document.getElementById('sSL').textContent = (p - 10).toFixed(2);
+             
+            // مستويات القناص SPX و NDX
+            const ndxP = p * 3.22;  
+            document.getElementById('sniperLevels').innerHTML = ` 
+                <tr><td style="color:var(--cyan); font-weight:bold;">SPX</td><td style="color:var(--bear); font-family:var(--fm);">${(p-15).toFixed(0)}</td><td style="color:var(--bull); font-family:var(--fm);">${(p+20).toFixed(0)}</td></tr> 
+                <tr><td style="color:var(--purple); font-weight:bold;">NDX</td><td style="color:var(--bear); font-family:var(--fm);">${(ndxP-80).toFixed(0)}</td><td style="color:var(--bull); font-family:var(--fm);">${(ndxP+110).toFixed(0)}</td></tr> 
+            `; 
 
-        document.getElementById('sEntry').textContent = price.toFixed(2);
-        document.getElementById('sT1').textContent = (price + 8).toFixed(2);
-        document.getElementById('sT2').textContent = (price + 18).toFixed(2);
-        document.getElementById('sSL').textContent = (price - 10).toFixed(2);
-        
-        // غاما
-        const base = Math.round(price / 50) * 50;
-        document.getElementById('gw1').textContent = base + 50;
-        document.getElementById('gz').textContent = base;
-        document.getElementById('gw2').textContent = base - 50;
-        document.getElementById('dl').textContent = (price - 25).toFixed(2);
-        document.getElementById('dh').textContent = (price + 25).toFixed(2);
+            // غاما
+            const base = Math.round(p / 50) * 50;
+            document.getElementById('gw1').textContent = base + 50;
+            document.getElementById('gz').textContent = base;
+            document.getElementById('gw2').textContent = base - 50;
 
-        // جدول القناص
-        const ndx = price * 3.22;
-        document.getElementById('sniperLvl').innerHTML = `
-            <tr><td style="color:var(--cyan); font-weight:bold;">SPX</td><td style="color:var(--bear);">${(price-18).toFixed(0)}</td><td style="color:var(--bull);">${(price+25).toFixed(0)}</td></tr>
-            <tr><td style="color:var(--purple); font-weight:bold;">NDX</td><td style="color:var(--bear);">${(ndx-75).toFixed(0)}</td><td style="color:var(--bull);">${(ndx+120).toFixed(0)}</td></tr>
-        `;
+            // عقود الأوبشن (مرتبة مالياً حسب التكلفة الأقل)
+            const s1 = Math.round(p / 5) * 5; 
+            const ops = [ 
+                {s: s1, cost: 350, profit: 700}, 
+                {s: s1 + 5, cost: 210, profit: 450},
+                {s: s1 + 10, cost: 120, profit: 280}
+            ].sort((a,b) => a.cost - b.cost); 
 
-        // جدول الأوبشن (مرتب مالياً)
-        const s1 = Math.round(price / 5) * 5;
-        const ops = [
-            {s: s1, c: 350, p: 700},
-            {s: s1+5, c: 210, p: 450},
-            {s: s1+10, c: 120, p: 280}
-        ].sort((a,b)=> a.c - b.c);
+            document.getElementById('optionsTable').innerHTML = ops.map(o => ` 
+                <tr>
+                    <td style="font-family:var(--fm); font-weight:bold;">${o.s} C</td>
+                    <td style="color:var(--bear); font-family:var(--fm);">$${o.cost}</td>
+                    <td style="color:var(--bull); font-family:var(--fm);">$${o.profit}</td>
+                </tr> 
+            `).join(''); 
 
-        document.getElementById('optionsTable').querySelector('tbody').innerHTML = ops.map(o => `
-            <tr style="text-align:center;">
-                <td style="font-weight:bold;">${o.s} C</td>
-                <td style="color:var(--bear)">$${o.c}</td>
-                <td style="color:var(--bull)">$${o.p}</td>
-            </tr>
-        `).join('');
+        } catch (e) { console.error("Data error"); } 
+    } 
 
-    } catch(e) { }
-}
-setInterval(fetchPrice, 5000);
-fetchPrice();
+    setInterval(fetchLive, 5000); 
+    fetchLive(); 
 
-setInterval(() => {
-    const t = new Date();
-    document.getElementById('sclk').textContent = `${String(t.getHours()).padStart(2,'0')}:${String(t.getMinutes()).padStart(2,'0')}:${String(t.getSeconds()).padStart(2,'0')}`;
-}, 1000);
+    setInterval(() => {
+        const t = new Date();
+        document.getElementById('sclk').textContent = `${String(t.getHours()).padStart(2,'0')}:${String(t.getMinutes()).padStart(2,'0')}:${String(t.getSeconds()).padStart(2,'0')}`;
+    }, 1000);
 </script> 
 </body> 
 </html>
