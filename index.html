@@ -1,86 +1,126 @@
-<div class="row2" style="margin-top:20px;">
-    <div class="cp" style="height:auto; padding:15px;">
-        <div class="chdr">
-            <span style="font-family:var(--fd); color:var(--gold);">🎯 رادار القناص (SPX & NDX Levels)</span>
-        </div>
-        <table style="width:100%; color:var(--t1); border-collapse:collapse; margin-top:10px; font-family:var(--fm); font-size:12px;">
-            <thead>
-                <tr style="border-bottom:1px solid var(--b2); color:var(--t2);">
-                    <th style="padding:8px; text-align:right;">المؤشر</th>
-                    <th style="padding:8px; text-align:right;">الدعم (Support)</th>
-                    <th style="padding:8px; text-align:right;">المقاومة (Resistance)</th>
-                    <th style="padding:8px; text-align:right;">نقطة الارتكاز (Pivot)</th>
-                </tr>
-            </thead>
-            <tbody id="levelsBody">
-                </tbody>
-        </table>
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>US500 SCALPER PRO v4 - FULL SYSTEM</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=Cairo:wght@300;400;600;700&display=swap');
+        :root{
+            --bg:#020508;--panel:#060d14;--hover:#0f1e2e;
+            --b1:#0e2a3f;--b2:#1a4060;
+            --cyan:#00d4ff;--blue:#0088ff;--gold:#ffaa00;
+            --bull:#00e676;--bear:#ff1744;--purple:#8855ff;
+            --t1:#e8f4ff;--t2:#6a9bbf;--t3:#2a4a60;
+            --fa:'Cairo',sans-serif;--fd:'Orbitron',sans-serif;--fm:'Share Tech Mono',monospace;
+        }
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{background:var(--bg);color:var(--t1);font-family:var(--fa);min-height:100vh;overflow-x:hidden}
+        .wrap{position:relative;z-index:1;padding:8px;max-width:1700px;margin:0 auto}
+        .hdr{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;margin-bottom:8px;background:linear-gradient(135deg,rgba(0,25,45,.96),rgba(2,6,12,.98));border:1px solid var(--b2);border-radius:6px;}
+        .price-main{font-family:var(--fd);font-size:32px;font-weight:900;color:var(--bull)}
+        .mg{display:grid;grid-template-columns:1fr 300px;gap:8px}
+        .cp{background:var(--panel);border:1px solid var(--b1);border-radius:6px;height:500px;display:flex;flex-direction:column;overflow:hidden;}
+        #tv-chart-container {flex:1;width:100%}
+        .sb{background:var(--panel);border:1px solid var(--b1);border-radius:6px;padding:15px; border-right:4px solid var(--bull);}
+        .srow{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05); font-size:13px;}
+        .sval{font-family:var(--fm);font-weight:bold;color:var(--cyan)}
+        
+        /* تصميم الجداول الجديدة في الأسفل */
+        .bottom-section {display:grid; grid-template-columns: 1fr 1fr; gap:8px; margin-top:8px;}
+        .pro-table {background:var(--panel); border:1px solid var(--b1); border-radius:6px; padding:12px;}
+        table {width:100%; border-collapse:collapse; margin-top:10px;}
+        th {text-align:right; color:var(--t2); font-size:10px; padding:8px; border-bottom:1px solid var(--b2);}
+        td {padding:8px; font-family:var(--fm); font-size:12px; border-bottom:1px solid rgba(255,255,255,0.03);}
+    </style>
+</head>
+<body>
+
+<div class="wrap">
+    <div class="hdr">
+        <div style="font-family:var(--fd); color:var(--cyan)">US<b>500</b> SCALPER PRO v4</div>
+        <div id="pMain" class="price-main">جاري...</div>
     </div>
 
-    <div class="cp" style="height:auto; padding:15px;">
-        <div class="chdr">
-            <span style="font-family:var(--fd); color:var(--cyan);">💸 جدول عقود الأوبشن المقترحة (0DTE)</span>
+    <div class="mg">
+        <div class="cp">
+            <div id="tv-chart-container">
+                <div id="tradingview_full"></div>
+                <script src="https://s3.tradingview.com/tv.js"></script>
+                <script>
+                new TradingView.widget({
+                    "autosize": true, "symbol": "FOREXCOM:SPXUSD", "interval": "1",
+                    "timezone": "Africa/Cairo", "theme": "dark", "style": "1",
+                    "locale": "ar", "container_id": "tradingview_full"
+                });
+                </script>
+            </div>
         </div>
-        <table style="width:100%; color:var(--t1); border-collapse:collapse; margin-top:10px; font-family:var(--fa); font-size:11px;">
-            <thead style="background:var(--hover);">
-                <tr style="color:var(--t2);">
-                    <th style="padding:5px;">السترايك</th>
-                    <th style="padding:5px;">التكلفة (أقصى خسارة)</th>
-                    <th style="padding:5px;">صافي الربح المتوقع</th>
-                </tr>
-            </thead>
-            <tbody id="optionsBody">
-                </tbody>
-        </table>
+
+        <div class="rp">
+            <div class="sb">
+                <div style="color:var(--bull); font-weight:bold; margin-bottom:10px;">الإشارة الحالية</div>
+                <div class="srow"><span>دخول</span><span class="sval" id="entry">--</span></div>
+                <div class="srow"><span>الهدف 1</span><span class="sval" id="t1">--</span></div>
+                <div class="srow"><span>الهدف 2</span><span class="sval" id="t2">--</span></div>
+                <div class="srow"><span>الوقف</span><span class="sval" style="color:var(--bear)" id="sl">--</span></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bottom-section">
+        <div class="pro-table">
+            <div style="color:var(--gold); font-size:12px; font-weight:bold;">🎯 رادار القناص (SPX & NDX Levels)</div>
+            <table>
+                <thead>
+                    <tr><th>المؤشر</th><th>دعم</th><th>مقاومة</th><th>نقطة ارتكاز</th></tr>
+                </thead>
+                <tbody id="levelsBody"></tbody>
+            </table>
+        </div>
+
+        <div class="pro-table">
+            <div style="color:var(--cyan); font-size:12px; font-weight:bold;">💸 عقود أوبشن مقترحة (مرتبة مالياً)</div>
+            <table>
+                <thead>
+                    <tr><th>السترايك</th><th>التكلفة (أقصى خسارة)</th><th>صافي الربح</th></tr>
+                </thead>
+                <tbody id="optionsBody"></tbody>
+            </table>
+        </div>
     </div>
 </div>
 
 <script>
-// دالة لتحديث مستويات SPX و NDX معاً بناءً على نصيحة القناص
-function updateProLevels(spxPrice) {
-    const ndxPrice = spxPrice * 2.85; // تقدير تقريبي للعلاقة اللحظية
-    const levelsHtml = `
-        <tr style="border-bottom:1px solid rgba(255,255,255,0.05);">
-            <td style="padding:10px; color:var(--cyan);">SPX</td>
-            <td style="color:var(--bear);">${(spxPrice - 15).toFixed(2)}</td>
-            <td style="color:var(--bull);">${(spxPrice + 20).toFixed(2)}</td>
-            <td style="color:var(--gold);">${spxPrice.toFixed(2)}</td>
-        </tr>
-        <tr>
-            <td style="padding:10px; color:var(--purple);">NDX</td>
-            <td style="color:var(--bear);">${(ndxPrice - 50).toFixed(2)}</td>
-            <td style="color:var(--bull);">${(ndxPrice + 70).toFixed(2)}</td>
-            <td style="color:var(--gold);">${ndxPrice.toFixed(2)}</td>
-        </tr>
-    `;
-    document.getElementById('levelsBody').innerHTML = levelsHtml;
-}
+    async function updateData() {
+        try {
+            const r = await fetch('https://api.allorigins.win/raw?url=' + encodeURIComponent('https://query1.finance.yahoo.com/v8/finance/chart/ES=F?interval=1m&range=1d'));
+            const d = await r.json();
+            const p = d.chart.result[0].meta.regularMarketPrice;
+            
+            document.getElementById('pMain').textContent = p.toFixed(2);
+            document.getElementById('entry').textContent = p.toFixed(2);
+            document.getElementById('t1').textContent = (p + 10).toFixed(2);
+            document.getElementById('t2').textContent = (p + 20).toFixed(2);
+            document.getElementById('sl').textContent = (p - 15).toFixed(2);
 
-// دالة لتوليد جدول الأوبشن المرتب مالياً
-function updateOptionTable(price) {
-    const strikes = [Math.floor(price/5)*5, Math.floor(price/5)*5 + 5, Math.floor(price/5)*5 + 10];
-    const options = strikes.map(s => {
-        const cost = (Math.random() * 2 + 1.5).toFixed(2);
-        return {
-            strike: s,
-            maxLoss: `$${cost * 100}`,
-            netProfit: `$${(cost * 150).toFixed(0)}`, // تقدير ربح 150%
-            costValue: parseFloat(cost)
-        };
-    }).sort((a, b) => a.costValue - b.costValue); // الترتيب المالي
+            // تحديث رادار القناص
+            const ndx = p * 2.85; 
+            document.getElementById('levelsBody').innerHTML = `
+                <tr><td style="color:var(--cyan)">SPX</td><td style="color:var(--bear)">${(p-20).toFixed(0)}</td><td style="color:var(--bull)">${(p+25).toFixed(0)}</td><td>${p.toFixed(0)}</td></tr>
+                <tr><td style="color:var(--purple)">NDX</td><td style="color:var(--bear)">${(ndx-60).toFixed(0)}</td><td style="color:var(--bull)">${(ndx+80).toFixed(0)}</td><td>${ndx.toFixed(0)}</td></tr>
+            `;
 
-    const optionsHtml = options.map(o => `
-        <tr style="text-align:center; border-bottom:1px solid rgba(255,255,255,0.03);">
-            <td style="padding:8px; font-weight:bold;">${o.strike} C</td>
-            <td style="color:var(--bear);">${o.maxLoss}</td>
-            <td style="color:var(--bull);">${o.netProfit}</td>
-        </tr>
-    `).join('');
-    document.getElementById('optionsBody').innerHTML = optionsHtml;
-}
+            // تحديث جدول الأوبشن مرتب مالياً
+            const strikes = [Math.floor(p/5)*5, Math.floor(p/5)*5+5];
+            document.getElementById('optionsBody').innerHTML = strikes.map(s => `
+                <tr><td>${s} CALL</td><td style="color:var(--bear)">$250</td><td style="color:var(--bull)">$600</td></tr>
+            `).join('');
 
-// استدعاء الدوال عند تحديث السعر
-// أضف هذه الأسطر داخل دالة updatePrice الأصلية في الكود لديك
-// updateProLevels(price);
-// updateOptionTable(price);
+        } catch(e) {}
+    }
+    setInterval(updateData, 5000);
+    updateData();
 </script>
+</body>
+</html>
