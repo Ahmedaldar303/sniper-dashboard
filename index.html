@@ -23,7 +23,7 @@ body{background:var(--bg);color:var(--t1);font-family:var(--fa);min-height:100vh
 .logo b{color:var(--gold);} 
 .price-main{font-family:var(--fd);font-size:32px;font-weight:900;color:var(--bull); text-shadow:0 0 10px rgba(0,230,118,.3);} 
 
-.dashboard-grid {display: grid; grid-template-columns: 340px 1fr 340px; gap: 12px;}
+.dashboard-grid {display: grid; grid-template-columns: 340px 1fr 350px; gap: 12px;}
 @media (max-width: 1024px) { .dashboard-grid { grid-template-columns: 1fr; } .tv-wrap { height: 500px !important; } }
 
 .panel{background:var(--panel); border:1px solid var(--b1); border-radius:8px; display:flex; flex-direction:column; overflow:hidden;} 
@@ -81,9 +81,12 @@ td{padding:8px; border-bottom:1px solid rgba(255,255,255,0.02);}
                 </div>
 
                 <div style="padding:15px; background:rgba(0,0,0,0.2);">
-                    <div class="s-row" style="padding:4px 0;"><span>منطقة الدخول</span><span class="sval" id="sEntry">--</span></div>
-                    <div class="s-row" style="padding:4px 0;"><span>🎯 الهدف</span><span class="sval" style="color:var(--bull)" id="sT1">--</span></div>
-                    <div class="s-row" style="padding:4px 0; border:none;"><span>🛑 الوقف</span><span class="sval" style="color:var(--bear)" id="sSL">--</span></div>
+                    <div class="s-row" style="padding:4px 0;"><span>منطقة الدخول</span><span class="sval" style="color:var(--cyan)" id="sEntry">--</span></div>
+                    <div class="s-row" style="padding:4px 0;"><span>🎯 الهدف الأول</span><span class="sval" style="color:var(--bull)" id="sT1">--</span></div>
+                    <div class="s-row" style="padding:4px 0;"><span>🎯 الهدف الثاني</span><span class="sval" style="color:var(--bull)" id="sT2">--</span></div>
+                    <div class="s-row" style="padding:4px 0;"><span>🎯 الهدف الثالث</span><span class="sval" style="color:var(--bull)" id="sT3">--</span></div>
+                    <div class="s-row" style="padding:4px 0;"><span>🔥 الهدف الرابع (انفجار)</span><span class="sval" style="color:var(--gold)" id="sT4">--</span></div>
+                    <div class="s-row" style="padding:4px 0; border:none; margin-top:5px;"><span>🛑 وقف الخسارة</span><span class="sval" style="color:var(--bear)" id="sSL">--</span></div>
                 </div>
             </div>
 
@@ -104,6 +107,12 @@ td{padding:8px; border-bottom:1px solid rgba(255,255,255,0.02);}
 
         <div class="col"> 
             <div class="panel" style="margin-bottom:12px;"> 
+                <div class="p-hdr"><span style="color:var(--gold);">⚙️ الاستراتيجيات المركبة (Spreads)</span></div> 
+                <div id="compTable" style="padding:10px; display:flex; flex-direction:column; gap:8px; overflow-y:auto; max-height:400px;">
+                    </div>
+            </div>
+
+            <div class="panel" style="margin-bottom:12px;"> 
                 <div class="p-hdr"><span>🎯 مستويات القناص (SPX & NDX)</span></div> 
                 <table> 
                     <thead style="background:rgba(0,0,0,0.2);">
@@ -113,19 +122,14 @@ td{padding:8px; border-bottom:1px solid rgba(255,255,255,0.02);}
                 </table> 
             </div>
 
-            <div class="panel" style="margin-bottom:12px;"> 
-                <div class="p-hdr"><span style="color:var(--gold);">⚙️ الاستراتيجية المركبة (Spreads)</span><span id="stratPower" style="font-family:var(--fm); color:var(--bull);">قوة: --</span></div> 
-                <div id="compTable" style="padding:10px; display:flex; flex-direction:column; gap:8px;"></div>
-            </div>
-
             <div class="panel"> 
-                <div class="p-hdr"><span>💸 عقود الأوبشن المباشرة (0DTE)</span></div> 
+                <div class="p-hdr"><span>💸 عقود 0DTE (شراء مباشر)</span></div> 
                 <table> 
                     <thead style="background:rgba(0,0,0,0.2);"> 
                         <tr>
-                            <th style="text-align:center;">التكلفة (أقصى خسارة)</th>
+                            <th style="text-align:center;">التكلفة (مخاطرة)</th>
                             <th style="text-align:center;">صافي الربح</th>
-                            <th style="text-align:center;">السترايكات</th>
+                            <th style="text-align:center;">السترايك</th>
                         </tr> 
                     </thead> 
                     <tbody id="optionsTable"></tbody> 
@@ -164,7 +168,6 @@ td{padding:8px; border-bottom:1px solid rgba(255,255,255,0.02);}
             document.getElementById('topPrice').textContent = p.toFixed(2); 
 
             // 1. حساب الانفجار السعري
-            const timeMins = new Date().getMinutes();
             let squeezeProb = 40 + Math.abs(p - baseOpenPrice) % 40; 
             if(squeezeProb > 95) squeezeProb = 95;
             
@@ -193,23 +196,24 @@ td{padding:8px; border-bottom:1px solid rgba(255,255,255,0.02);}
                 masterSig.className = 'engine-status status-call';
                 masterSig.textContent = 'CALL 🟢';
                 document.getElementById('sEntry').textContent = p.toFixed(2);
-                document.getElementById('sT1').textContent = (p + 15).toFixed(2);
-                document.getElementById('sSL').textContent = (p - 10).toFixed(2);
-                document.getElementById('stratPower').textContent = 'قوة: 88% 🔥';
+                document.getElementById('sT1').textContent = (p + 10).toFixed(2);
+                document.getElementById('sT2').textContent = (p + 20).toFixed(2);
+                document.getElementById('sT3').textContent = (p + 35).toFixed(2);
+                document.getElementById('sT4').textContent = (p + 50).toFixed(2);
+                document.getElementById('sSL').textContent = (p - 15).toFixed(2);
             } else if(currentSignal === 'PUT') {
                 masterSig.className = 'engine-status status-put';
                 masterSig.textContent = 'PUT 🔴';
                 document.getElementById('sEntry').textContent = p.toFixed(2);
-                document.getElementById('sT1').textContent = (p - 15).toFixed(2);
-                document.getElementById('sSL').textContent = (p + 10).toFixed(2);
-                document.getElementById('stratPower').textContent = 'قوة: 92% 🔥';
+                document.getElementById('sT1').textContent = (p - 10).toFixed(2);
+                document.getElementById('sT2').textContent = (p - 20).toFixed(2);
+                document.getElementById('sT3').textContent = (p - 35).toFixed(2);
+                document.getElementById('sT4').textContent = (p - 50).toFixed(2);
+                document.getElementById('sSL').textContent = (p + 15).toFixed(2);
             } else {
                 masterSig.className = 'engine-status status-wait';
                 masterSig.textContent = 'WAIT ✋';
-                document.getElementById('sEntry').textContent = '--';
-                document.getElementById('sT1').textContent = '--';
-                document.getElementById('sSL').textContent = '--';
-                document.getElementById('stratPower').textContent = 'قوة: --';
+                ['sEntry','sT1','sT2','sT3','sT4','sSL'].forEach(id => document.getElementById(id).textContent = '--');
             }
              
             // مستويات SPX و NDX
@@ -225,7 +229,7 @@ td{padding:8px; border-bottom:1px solid rgba(255,255,255,0.02);}
             document.getElementById('gz').textContent = base;
             document.getElementById('gw2').textContent = base - 50;
 
-            // عقود الأوبشن المباشرة (مرتبة مالياً)
+            // عقود الأوبشن المباشرة (شراء فقط)
             const s1 = Math.round(p / 5) * 5; 
             const opType = currentSignal === 'PUT' ? 'P' : 'C';
             const ops = [ 
@@ -242,47 +246,48 @@ td{padding:8px; border-bottom:1px solid rgba(255,255,255,0.02);}
                 </tr> 
             `).join(''); 
 
-            // الاستراتيجيات المركبة (Debit Spreads) - بطاقات ذكية
-            let spreadHTML = '';
+            // ----------------------------------------------------
+            // الاستراتيجيات المركبة - بطاقات ديناميكية واضحة
+            // ----------------------------------------------------
+            let spreads = [];
             
-            if(currentSignal === 'PUT') {
-                spreadHTML = `
-                    <div style="background:rgba(255,23,68,0.08); border:1px solid rgba(255,23,68,0.3); border-radius:6px; padding:12px;">
-                        <div style="color:var(--bear); font-weight:bold; margin-bottom:8px; font-size:13px; text-align:center;">📉 Bear Put Spread</div>
-                        <div style="display:flex; justify-content:space-between; margin-bottom:8px; font-size:12px; background:rgba(0,0,0,0.3); padding:6px; border-radius:4px;">
-                            <span style="color:var(--t2)">1. شراء: <b style="color:var(--t1); font-family:var(--fm)">${s1} P</b></span>
-                            <span style="color:var(--t2)">2. بيع: <b style="color:var(--t1); font-family:var(--fm)">${s1-5} P</b></span>
-                        </div>
-                        <div style="display:flex; justify-content:space-between; font-size:11px; font-family:var(--fm);">
-                            <span>التكلفة (أقصى خسارة): <b style="color:var(--bear)">$140</b></span>
-                            <span>صافي الربح: <b style="color:var(--bull)">$360</b></span>
-                        </div>
-                    </div>
-                `;
-            } else if(currentSignal === 'CALL') {
-                spreadHTML = `
-                    <div style="background:rgba(0,230,118,0.08); border:1px solid rgba(0,230,118,0.3); border-radius:6px; padding:12px;">
-                        <div style="color:var(--bull); font-weight:bold; margin-bottom:8px; font-size:13px; text-align:center;">📈 Bull Call Spread</div>
-                        <div style="display:flex; justify-content:space-between; margin-bottom:8px; font-size:12px; background:rgba(0,0,0,0.3); padding:6px; border-radius:4px;">
-                            <span style="color:var(--t2)">1. شراء: <b style="color:var(--t1); font-family:var(--fm)">${s1} C</b></span>
-                            <span style="color:var(--t2)">2. بيع: <b style="color:var(--t1); font-family:var(--fm)">${s1+5} C</b></span>
-                        </div>
-                        <div style="display:flex; justify-content:space-between; font-size:11px; font-family:var(--fm);">
-                            <span>التكلفة (أقصى خسارة): <b style="color:var(--bear)">$140</b></span>
-                            <span>صافي الربح: <b style="color:var(--bull)">$360</b></span>
-                        </div>
-                    </div>
-                `;
+            if(currentSignal === 'CALL') {
+                spreads = [
+                    {name: 'Bull Call Spread (عالي الثقة)', buy: `${s1}C`, sell: `${s1+10}C`, cost: 350, profit: 650, power: '95% 🔥', type: 'bull'},
+                    {name: 'Bull Call Spread (متوازن)', buy: `${s1+5}C`, sell: `${s1+15}C`, cost: 200, profit: 800, power: '85% ⚡', type: 'bull'},
+                    {name: 'Bull Call Spread (مخاطرة/انفجار)', buy: `${s1+10}C`, sell: `${s1+25}C`, cost: 100, profit: 1400, power: '70% 🚀', type: 'bull'}
+                ];
+            } else if(currentSignal === 'PUT') {
+                spreads = [
+                    {name: 'Bear Put Spread (عالي الثقة)', buy: `${s1}P`, sell: `${s1-10}P`, cost: 380, profit: 620, power: '92% 🔥', type: 'bear'},
+                    {name: 'Bear Put Spread (متوازن)', buy: `${s1-5}P`, sell: `${s1-15}P`, cost: 220, profit: 780, power: '82% ⚡', type: 'bear'},
+                    {name: 'Bear Put Spread (مخاطرة/انفجار)', buy: `${s1-10}P`, sell: `${s1-25}P`, cost: 120, profit: 1380, power: '65% 🚀', type: 'bear'}
+                ];
             } else {
-                spreadHTML = `
-                    <div style="text-align:center; padding:15px; color:var(--t3); font-size:12px; background:rgba(255,255,255,0.02); border-radius:6px; border:1px dashed var(--b2);">
-                        <div style="font-size:18px; margin-bottom:5px;">⏳</div>
-                        لا توجد استراتيجية مركبة حالياً<br>ننتظر إشارة انفجار سعري واضحة
-                    </div>
-                `;
+                spreads = [
+                    {name: 'Iron Condor (محايد/نطاق عرضي)', buy: `شراء ${s1+15}C/ ${s1-15}P`, sell: `بيع ${s1+10}C/ ${s1-10}P`, cost: 150, profit: 350, power: '88% ⚖️', type: 'wait'},
+                    {name: 'Call Credit Spread (مقاومة)', buy: `${s1+20}C`, sell: `${s1+10}C`, cost: 100, profit: 400, power: '75% 🛡️', type: 'wait'},
+                    {name: 'Put Credit Spread (دعم)', buy: `${s1-20}P`, sell: `${s1-10}P`, cost: 100, profit: 400, power: '75% 🛡️', type: 'wait'}
+                ];
             }
 
-            document.getElementById('compTable').innerHTML = spreadHTML;
+            document.getElementById('compTable').innerHTML = spreads.map(s => `
+                <div style="background:rgba(255,255,255,0.03); border-radius:6px; padding:10px; border-right:3px solid ${s.type==='bull'?'var(--bull)':s.type==='bear'?'var(--bear)':'var(--gold)'}; margin-bottom:4px;">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+                        <span style="font-size:12px; font-weight:bold; color:var(--cyan);">${s.name}</span>
+                        <span style="font-size:11px; color:var(--bull); font-family:var(--fm); font-weight:bold;">${s.power}</span>
+                    </div>
+                    
+                    <div style="background:rgba(0,0,0,0.5); padding:8px; border-radius:4px; font-family:var(--fm); font-size:13px; text-align:center; color:var(--t1); margin-bottom:8px; letter-spacing:1px; border:1px solid rgba(255,255,255,0.05);">
+                        شراء <span style="color:${s.type==='bull'?'var(--bull)':s.type==='bear'?'var(--bear)':'var(--gold)'}">${s.buy}</span> &nbsp;➖&nbsp; بيع <span style="color:var(--bear)">${s.sell}</span>
+                    </div>
+                    
+                    <div style="display:flex; justify-content:space-between; font-size:11px; font-family:var(--fm);">
+                        <span>أقصى خسارة: <b style="color:var(--bear)">$${s.cost}</b></span>
+                        <span>صافي الربح: <b style="color:var(--bull)">$${s.profit}</b></span>
+                    </div>
+                </div>
+            `).join('');
 
         } catch (e) { console.error("Data error"); } 
     } 
