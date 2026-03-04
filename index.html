@@ -127,7 +127,7 @@ td{padding:8px; border-bottom:1px solid rgba(255,255,255,0.02);}
                 <table> 
                     <thead style="background:rgba(0,0,0,0.2);"> 
                         <tr>
-                            <th style="text-align:center;">التكلفة (مخاطرة)</th>
+                            <th style="text-align:center;">التكلفة (أقصى خسارة)</th>
                             <th style="text-align:center;">صافي الربح</th>
                             <th style="text-align:center;">السترايك</th>
                         </tr> 
@@ -159,137 +159,156 @@ td{padding:8px; border-bottom:1px solid rgba(255,255,255,0.02);}
     let baseOpenPrice = 0;
 
     async function fetchLive() { 
-        try { 
-            const r = await fetch('https://api.allorigins.win/raw?url=' + encodeURIComponent('https://query1.finance.yahoo.com/v8/finance/chart/ES=F?interval=1m&range=1d')); 
-            const d = await r.json(); 
-            const p = d.chart.result[0].meta.regularMarketPrice; 
-            if(baseOpenPrice === 0) baseOpenPrice = d.chart.result[0].meta.previousClose || p;
+        const targetUrl = 'https://query1.finance.yahoo.com/v8/finance/chart/ES=F?interval=1m&range=1d';
+        const proxies = [
+            `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`,
+            `https://corsproxy.io/?${encodeURIComponent(targetUrl)}`,
+            `https://api.codetabs.com/v1/proxy?quest=${targetUrl}`
+        ];
 
-            document.getElementById('topPrice').textContent = p.toFixed(2); 
+        let p = 0;
 
-            // 1. حساب الانفجار السعري
-            let squeezeProb = 40 + Math.abs(p - baseOpenPrice) % 40; 
-            if(squeezeProb > 95) squeezeProb = 95;
-            
-            document.getElementById('expVal').textContent = squeezeProb.toFixed(0) + '%';
-            const expFill = document.getElementById('expFill');
-            expFill.style.width = squeezeProb + '%';
-            expFill.style.background = squeezeProb > 80 ? 'var(--bear)' : (squeezeProb > 50 ? 'var(--gold)' : 'var(--cyan)');
+        // المرور على البروكسيات لتفادي الانقطاع وقت الذروة
+        for (let proxy of proxies) {
+            try {
+                const r = await fetch(proxy);
+                if (!r.ok) continue;
+                const d = await r.json();
+                p = d.chart.result[0].meta.regularMarketPrice;
+                if(baseOpenPrice === 0) baseOpenPrice = d.chart.result[0].meta.previousClose || p;
+                break;
+            } catch (e) { console.log("تحويل للبروكسي البديل..."); }
+        }
 
-            // 2. خوارزمية الإشارة المستقرة
-            const now = Date.now();
-            if(now > lockUntil) {
-                if(squeezeProb > 80 && p > baseOpenPrice) {
-                    currentSignal = 'CALL';
-                    lockUntil = now + (15 * 60 * 1000); 
-                } else if(squeezeProb > 80 && p < baseOpenPrice) {
-                    currentSignal = 'PUT';
-                    lockUntil = now + (15 * 60 * 1000);
-                } else {
-                    currentSignal = 'WAIT';
-                    lockUntil = now + (5 * 60 * 1000); 
-                }
-            }
+        if (p === 0) {
+            document.getElementById('masterSignal').innerHTML = 'NO DATA ⚠️';
+            return;
+        }
 
-            const masterSig = document.getElementById('masterSignal');
-            if(currentSignal === 'CALL') {
-                masterSig.className = 'engine-status status-call';
-                masterSig.textContent = 'CALL 🟢';
-                document.getElementById('sEntry').textContent = p.toFixed(2);
-                document.getElementById('sT1').textContent = (p + 10).toFixed(2);
-                document.getElementById('sT2').textContent = (p + 20).toFixed(2);
-                document.getElementById('sT3').textContent = (p + 35).toFixed(2);
-                document.getElementById('sT4').textContent = (p + 50).toFixed(2);
-                document.getElementById('sSL').textContent = (p - 15).toFixed(2);
-            } else if(currentSignal === 'PUT') {
-                masterSig.className = 'engine-status status-put';
-                masterSig.textContent = 'PUT 🔴';
-                document.getElementById('sEntry').textContent = p.toFixed(2);
-                document.getElementById('sT1').textContent = (p - 10).toFixed(2);
-                document.getElementById('sT2').textContent = (p - 20).toFixed(2);
-                document.getElementById('sT3').textContent = (p - 35).toFixed(2);
-                document.getElementById('sT4').textContent = (p - 50).toFixed(2);
-                document.getElementById('sSL').textContent = (p + 15).toFixed(2);
+        document.getElementById('topPrice').textContent = p.toFixed(2); 
+
+        // 1. حساب الانفجار السعري
+        let squeezeProb = 40 + Math.abs(p - baseOpenPrice) % 40; 
+        if(squeezeProb > 95) squeezeProb = 95;
+        
+        document.getElementById('expVal').textContent = squeezeProb.toFixed(0) + '%';
+        const expFill = document.getElementById('expFill');
+        expFill.style.width = squeezeProb + '%';
+        expFill.style.background = squeezeProb > 80 ? 'var(--bear)' : (squeezeProb > 50 ? 'var(--gold)' : 'var(--cyan)');
+
+        // 2. خوارزمية الإشارة المستقرة
+        const now = Date.now();
+        if(now > lockUntil) {
+            if(squeezeProb > 80 && p > baseOpenPrice) {
+                currentSignal = 'CALL';
+                lockUntil = now + (15 * 60 * 1000); 
+            } else if(squeezeProb > 80 && p < baseOpenPrice) {
+                currentSignal = 'PUT';
+                lockUntil = now + (15 * 60 * 1000);
             } else {
-                masterSig.className = 'engine-status status-wait';
-                masterSig.textContent = 'WAIT ✋';
-                ['sEntry','sT1','sT2','sT3','sT4','sSL'].forEach(id => document.getElementById(id).textContent = '--');
+                currentSignal = 'WAIT';
+                lockUntil = now + (5 * 60 * 1000); 
             }
-             
-            // مستويات SPX و NDX
-            const ndxP = p * 3.22;  
-            document.getElementById('sniperLevels').innerHTML = ` 
-                <tr><td style="color:var(--cyan); font-weight:bold;">SPX</td><td style="color:var(--bear); font-family:var(--fm);">${(p-15).toFixed(0)}</td><td style="color:var(--bull); font-family:var(--fm);">${(p+20).toFixed(0)}</td></tr> 
-                <tr><td style="color:var(--purple); font-weight:bold;">NDX</td><td style="color:var(--bear); font-family:var(--fm);">${(ndxP-80).toFixed(0)}</td><td style="color:var(--bull); font-family:var(--fm);">${(ndxP+110).toFixed(0)}</td></tr> 
-            `; 
+        }
 
-            // غاما
-            const base = Math.round(p / 50) * 50;
-            document.getElementById('gw1').textContent = base + 50;
-            document.getElementById('gz').textContent = base;
-            document.getElementById('gw2').textContent = base - 50;
+        const masterSig = document.getElementById('masterSignal');
+        if(currentSignal === 'CALL') {
+            masterSig.className = 'engine-status status-call';
+            masterSig.textContent = 'CALL 🟢';
+            document.getElementById('sEntry').textContent = p.toFixed(2);
+            document.getElementById('sT1').textContent = (p + 10).toFixed(2);
+            document.getElementById('sT2').textContent = (p + 20).toFixed(2);
+            document.getElementById('sT3').textContent = (p + 35).toFixed(2);
+            document.getElementById('sT4').textContent = (p + 50).toFixed(2);
+            document.getElementById('sSL').textContent = (p - 15).toFixed(2);
+        } else if(currentSignal === 'PUT') {
+            masterSig.className = 'engine-status status-put';
+            masterSig.textContent = 'PUT 🔴';
+            document.getElementById('sEntry').textContent = p.toFixed(2);
+            document.getElementById('sT1').textContent = (p - 10).toFixed(2);
+            document.getElementById('sT2').textContent = (p - 20).toFixed(2);
+            document.getElementById('sT3').textContent = (p - 35).toFixed(2);
+            document.getElementById('sT4').textContent = (p - 50).toFixed(2);
+            document.getElementById('sSL').textContent = (p + 15).toFixed(2);
+        } else {
+            masterSig.className = 'engine-status status-wait';
+            masterSig.textContent = 'WAIT ✋';
+            ['sEntry','sT1','sT2','sT3','sT4','sSL'].forEach(id => document.getElementById(id).textContent = '--');
+        }
+         
+        // مستويات SPX و NDX
+        const ndxP = p * 3.22;  
+        document.getElementById('sniperLevels').innerHTML = ` 
+            <tr><td style="color:var(--cyan); font-weight:bold;">SPX</td><td style="color:var(--bear); font-family:var(--fm);">${(p-15).toFixed(0)}</td><td style="color:var(--bull); font-family:var(--fm);">${(p+20).toFixed(0)}</td></tr> 
+            <tr><td style="color:var(--purple); font-weight:bold;">NDX</td><td style="color:var(--bear); font-family:var(--fm);">${(ndxP-80).toFixed(0)}</td><td style="color:var(--bull); font-family:var(--fm);">${(ndxP+110).toFixed(0)}</td></tr> 
+        `; 
 
-            // عقود الأوبشن المباشرة (شراء فقط)
-            const s1 = Math.round(p / 5) * 5; 
-            const opType = currentSignal === 'PUT' ? 'P' : 'C';
-            const ops = [ 
-                {s: s1, cost: 350, profit: 700}, 
-                {s: s1 + (opType==='C'?5:-5), cost: 210, profit: 450},
-                {s: s1 + (opType==='C'?10:-10), cost: 120, profit: 280}
-            ].sort((a,b) => a.cost - b.cost); 
+        // غاما
+        const base = Math.round(p / 50) * 50;
+        document.getElementById('gw1').textContent = base + 50;
+        document.getElementById('gz').textContent = base;
+        document.getElementById('gw2').textContent = base - 50;
 
-            document.getElementById('optionsTable').innerHTML = ops.map(o => ` 
-                <tr>
-                    <td style="color:var(--bear); font-family:var(--fm);">$${o.cost}</td>
-                    <td style="color:var(--bull); font-family:var(--fm);">$${o.profit}</td>
-                    <td style="font-family:var(--fm); font-weight:bold;">${o.s} ${opType}</td>
-                </tr> 
-            `).join(''); 
+        // عقود الأوبشن المباشرة (مرتبة مالياً حسب التكلفة الأقل)
+        const s1 = Math.round(p / 5) * 5; 
+        const opType = currentSignal === 'PUT' ? 'P' : 'C';
+        const ops = [ 
+            {s: s1, cost: 350, profit: 700}, 
+            {s: s1 + (opType==='C'?5:-5), cost: 210, profit: 450},
+            {s: s1 + (opType==='C'?10:-10), cost: 120, profit: 280}
+        ].sort((a,b) => a.cost - b.cost); 
 
-            // ----------------------------------------------------
-            // الاستراتيجيات المركبة - بطاقات ديناميكية واضحة
-            // ----------------------------------------------------
-            let spreads = [];
-            
-            if(currentSignal === 'CALL') {
-                spreads = [
-                    {name: 'Bull Call Spread (عالي الثقة)', buy: `${s1}C`, sell: `${s1+10}C`, cost: 350, profit: 650, power: '95% 🔥', type: 'bull'},
-                    {name: 'Bull Call Spread (متوازن)', buy: `${s1+5}C`, sell: `${s1+15}C`, cost: 200, profit: 800, power: '85% ⚡', type: 'bull'},
-                    {name: 'Bull Call Spread (مخاطرة/انفجار)', buy: `${s1+10}C`, sell: `${s1+25}C`, cost: 100, profit: 1400, power: '70% 🚀', type: 'bull'}
-                ];
-            } else if(currentSignal === 'PUT') {
-                spreads = [
-                    {name: 'Bear Put Spread (عالي الثقة)', buy: `${s1}P`, sell: `${s1-10}P`, cost: 380, profit: 620, power: '92% 🔥', type: 'bear'},
-                    {name: 'Bear Put Spread (متوازن)', buy: `${s1-5}P`, sell: `${s1-15}P`, cost: 220, profit: 780, power: '82% ⚡', type: 'bear'},
-                    {name: 'Bear Put Spread (مخاطرة/انفجار)', buy: `${s1-10}P`, sell: `${s1-25}P`, cost: 120, profit: 1380, power: '65% 🚀', type: 'bear'}
-                ];
-            } else {
-                spreads = [
-                    {name: 'Iron Condor (محايد/نطاق عرضي)', buy: `شراء ${s1+15}C/ ${s1-15}P`, sell: `بيع ${s1+10}C/ ${s1-10}P`, cost: 150, profit: 350, power: '88% ⚖️', type: 'wait'},
-                    {name: 'Call Credit Spread (مقاومة)', buy: `${s1+20}C`, sell: `${s1+10}C`, cost: 100, profit: 400, power: '75% 🛡️', type: 'wait'},
-                    {name: 'Put Credit Spread (دعم)', buy: `${s1-20}P`, sell: `${s1-10}P`, cost: 100, profit: 400, power: '75% 🛡️', type: 'wait'}
-                ];
-            }
+        document.getElementById('optionsTable').innerHTML = ops.map(o => ` 
+            <tr>
+                <td style="color:var(--bear); font-family:var(--fm);">$${o.cost}</td>
+                <td style="color:var(--bull); font-family:var(--fm);">$${o.profit}</td>
+                <td style="font-family:var(--fm); font-weight:bold;">${o.s} ${opType}</td>
+            </tr> 
+        `).join(''); 
 
-            document.getElementById('compTable').innerHTML = spreads.map(s => `
-                <div style="background:rgba(255,255,255,0.03); border-radius:6px; padding:10px; border-right:3px solid ${s.type==='bull'?'var(--bull)':s.type==='bear'?'var(--bear)':'var(--gold)'}; margin-bottom:4px;">
-                    <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
-                        <span style="font-size:12px; font-weight:bold; color:var(--cyan);">${s.name}</span>
-                        <span style="font-size:11px; color:var(--bull); font-family:var(--fm); font-weight:bold;">${s.power}</span>
-                    </div>
-                    
-                    <div style="background:rgba(0,0,0,0.5); padding:8px; border-radius:4px; font-family:var(--fm); font-size:13px; text-align:center; color:var(--t1); margin-bottom:8px; letter-spacing:1px; border:1px solid rgba(255,255,255,0.05);">
-                        شراء <span style="color:${s.type==='bull'?'var(--bull)':s.type==='bear'?'var(--bear)':'var(--gold)'}">${s.buy}</span> &nbsp;➖&nbsp; بيع <span style="color:var(--bear)">${s.sell}</span>
-                    </div>
-                    
-                    <div style="display:flex; justify-content:space-between; font-size:11px; font-family:var(--fm);">
-                        <span>أقصى خسارة: <b style="color:var(--bear)">$${s.cost}</b></span>
-                        <span>صافي الربح: <b style="color:var(--bull)">$${s.profit}</b></span>
-                    </div>
+        // ----------------------------------------------------
+        // الاستراتيجيات المركبة - بطاقات ديناميكية واضحة
+        // ----------------------------------------------------
+        let spreads = [];
+        
+        if(currentSignal === 'CALL') {
+            spreads = [
+                {name: 'Bull Call Spread (عالي الثقة)', buy: `${s1}C`, sell: `${s1+10}C`, cost: 350, profit: 650, power: '95% 🔥', type: 'bull'},
+                {name: 'Bull Call Spread (متوازن)', buy: `${s1+5}C`, sell: `${s1+15}C`, cost: 200, profit: 800, power: '85% ⚡', type: 'bull'},
+                {name: 'Bull Call Spread (مخاطرة/انفجار)', buy: `${s1+10}C`, sell: `${s1+25}C`, cost: 100, profit: 1400, power: '70% 🚀', type: 'bull'}
+            ];
+        } else if(currentSignal === 'PUT') {
+            spreads = [
+                {name: 'Bear Put Spread (عالي الثقة)', buy: `${s1}P`, sell: `${s1-10}P`, cost: 380, profit: 620, power: '92% 🔥', type: 'bear'},
+                {name: 'Bear Put Spread (متوازن)', buy: `${s1-5}P`, sell: `${s1-15}P`, cost: 220, profit: 780, power: '82% ⚡', type: 'bear'},
+                {name: 'Bear Put Spread (مخاطرة/انفجار)', buy: `${s1-10}P`, sell: `${s1-25}P`, cost: 120, profit: 1380, power: '65% 🚀', type: 'bear'}
+            ];
+        } else {
+            spreads = [
+                {name: 'Iron Condor (محايد/نطاق عرضي)', buy: `شراء ${s1+15}C / ${s1-15}P`, sell: `بيع ${s1+10}C / ${s1-10}P`, cost: 150, profit: 350, power: '88% ⚖️', type: 'wait'},
+                {name: 'Call Credit Spread (مقاومة)', buy: `${s1+20}C`, sell: `${s1+10}C`, cost: 100, profit: 400, power: '75% 🛡️', type: 'wait'},
+                {name: 'Put Credit Spread (دعم)', buy: `${s1-20}P`, sell: `${s1-10}P`, cost: 100, profit: 400, power: '75% 🛡️', type: 'wait'}
+            ];
+        }
+
+        document.getElementById('compTable').innerHTML = spreads.map(s => `
+            <div style="background:rgba(255,255,255,0.03); border-radius:6px; padding:10px; border-right:3px solid ${s.type==='bull'?'var(--bull)':s.type==='bear'?'var(--bear)':'var(--gold)'}; margin-bottom:4px;">
+                <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+                    <span style="font-size:12px; font-weight:bold; color:var(--cyan);">${s.name}</span>
+                    <span style="font-size:11px; color:var(--bull); font-family:var(--fm); font-weight:bold;">${s.power}</span>
                 </div>
-            `).join('');
+                
+                <div style="background:rgba(0,0,0,0.5); padding:8px; border-radius:4px; font-family:var(--fm); font-size:13px; text-align:center; color:var(--t1); margin-bottom:8px; letter-spacing:1px; border:1px solid rgba(255,255,255,0.05);">
+                    شراء <span style="color:${s.type==='bull'?'var(--bull)':s.type==='bear'?'var(--bear)':'var(--gold)'}">${s.buy}</span> &nbsp;➖&nbsp; بيع <span style="color:var(--bear)">${s.sell}</span>
+                </div>
+                
+                <div style="display:flex; justify-content:space-between; font-size:11px; font-family:var(--fm);">
+                    <span>التكلفة (مخاطرة): <b style="color:var(--bear)">$${s.cost}</b></span>
+                    <span>صافي الربح: <b style="color:var(--bull)">$${s.profit}</b></span>
+                </div>
+            </div>
+        `).join('');
 
-        } catch (e) { console.error("Data error"); } 
     } 
 
     setInterval(fetchLive, 5000); 
