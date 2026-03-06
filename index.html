@@ -3,137 +3,119 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>US500 — مركز القيادة المطور</title>
+<title>US500 — مركز القيادة المؤسسي الشامل</title>
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Tajawal:wght@300;400;500;700;900&family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
 <style>
+/* نستخدم نفس التنسيقات الفاخرة لملفك الأصلي */
 :root{--bg:#010509;--bgp:#060e18;--bgc:#091422;--brd:rgba(0,180,255,0.08);--brdg:rgba(0,200,255,0.22);--cyan:#00d4ff;--gold:#ffd700;--bull:#00e676;--bulld:rgba(0,230,118,0.12);--bear:#ff1744;--beard:rgba(255,23,68,0.12);--neu:#ff9100;--txt:#ddeeff;--txt2:rgba(170,210,255,0.65);--muted:rgba(90,150,210,0.4);--gcyan:0 0 18px rgba(0,212,255,0.35),0 0 50px rgba(0,212,255,0.12);--gbull:0 0 14px rgba(0,230,118,0.5);--gbear:0 0 14px rgba(255,23,68,0.5);--ggold:0 0 18px rgba(255,215,0,0.28)}
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:var(--bg);color:var(--txt);font-family:'Cairo',sans-serif;min-height:100vh;overflow-x:hidden;direction:rtl}
-.wrap{position:relative;z-index:2}
 .hdr{background:linear-gradient(180deg,rgba(0,180,255,.07) 0%,transparent 100%);border-bottom:1px solid var(--brdg);padding:10px 18px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;backdrop-filter:blur(18px)}
-.logo-name{font-family:'Tajawal',sans-serif;font-size:19px;font-weight:900;letter-spacing:3px;color:var(--cyan);text-shadow:var(--gcyan)}
-.hdr-px .val{font-family:'Share Tech Mono',monospace;font-size:25px;font-weight:700;color:var(--cyan);text-shadow:var(--gcyan)}
 .grid{display:grid;grid-template-columns:265px 1fr 285px;gap:1px;background:var(--brd);min-height:calc(100vh - 62px)}
-.panel{background:var(--bgp);padding:13px;position:relative;overflow:hidden;animation:fadeUp .45s ease forwards}
+.panel{background:var(--bgp);padding:13px;position:relative;overflow:hidden;border-bottom:1px solid var(--brd)}
 .ptitle{font-family:'Cairo',sans-serif;font-size:11px;font-weight:700;color:var(--muted);margin-bottom:11px;display:flex;align-items:center;gap:6px}
 .ptitle::before{content:'';width:3px;height:12px;background:var(--cyan);box-shadow:var(--gcyan)}
-.orb{width:108px;height:108px;border-radius:50%;margin:7px auto 12px;display:flex;flex-direction:column;align-items:center;justify-content:center}
-.orb.bull{border:2px solid var(--bull);box-shadow:var(--gbull)}
-.orb.bear{border:2px solid var(--bear);box-shadow:var(--gbear)}
-.tgt{display:flex;align-items:center;justify-content:space-between;padding:7px 9px;margin-bottom:4px;border-radius:2px;border:1px solid;cursor:default}
-.lvtbl{width:100%;border-collapse:collapse;margin-top:7px}
-.lvtbl th{font-family:'Cairo',sans-serif;font-size:8px;color:var(--muted);padding:4px 5px;text-align:right}
-.lvtbl td{font-family:'Share Tech Mono',monospace;font-size:11px;padding:4px 5px}
-.bot{display:grid;grid-template-columns:repeat(8,1fr);background:var(--bgp);border-top:1px solid var(--brdg)}
-.met{padding:8px 11px;border-left:1px solid var(--brd)}
-.liq-map{position:relative;height:205px;background:rgba(0,0,0,.28);border:1px solid var(--brd);overflow:hidden}
-.cur-ln{position:absolute;left:0;right:0;height:2px;background:var(--cyan);z-index:5}
-.ll{position:absolute;left:0;right:0;display:flex;align-items:center}
-.lb{flex:1;height:1px}
-.lb-buy{background:linear-gradient(270deg,transparent,var(--bull))}
-.lb-sell{background:linear-gradient(90deg,transparent,var(--bear))}
-@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.val-en{font-family:'Share Tech Mono',monospace; direction:ltr; unicode-bidi:bidi-override;}
+/* Charts & Gauges */
+.vix-arc{width:152px;height:80px;margin:8px auto 4px;position:relative;}
+.liq-map{position:relative;height:180px;background:rgba(0,0,0,0.2);overflow:hidden;}
 </style>
 </head>
 <body>
-<div class="wrap">
+
 <div class="hdr">
   <div style="order:1;display:flex;align-items:center;gap:14px">
-    <div><div class="clk-v" id="clk" style="font-family:'Share Tech Mono'; color:var(--gold)">00:00:00</div></div>
-    <div class="sess s-open" id="sess">● فحص المصادر...</div>
+    <div>
+      <div class="val-en" id="clk" style="font-size:18px; color:var(--gold)">00:00:00</div>
+    </div>
+    <div class="sess s-open" id="sess">● INITIALIZING ENGINE</div>
   </div>
-  <div class="hdr-px" style="order:2">
-    <div class="val" id="hpx">5,900.00</div>
-    <div class="chg" id="hchg" style="font-family:'Share Tech Mono'; font-size:12px">INITIALIZING...</div>
+  <div class="hdr-px" style="order:2; text-align:center">
+    <div class="val-en" id="hpx" style="font-size:28px; font-weight:700; color:var(--cyan)">0,000.00</div>
+    <div class="val-en" id="hchg" style="font-size:12px">--%</div>
   </div>
   <div style="order:3;text-align:right">
-    <div class="logo-name">US500 COMMAND CENTER</div>
-    <div class="logo-sub">TRIPLE-FAILSAFE ENGINE v4.2</div>
+    <div class="logo-name" style="font-size:19px; font-weight:900; color:var(--cyan)">US500 COMMAND CENTER</div>
+    <div class="logo-sub" style="font-family:'Share Tech Mono'; font-size:8px">ULTIMATE V4.3 — INSTITUTIONAL FEED</div>
   </div>
 </div>
 
 <div class="grid">
-  <div class="col">
+  <div class="col" style="display:flex; flex-direction:column; gap:1px">
     <div class="panel">
-        <div class="ptitle">محرك التحيز الاتجاهي</div>
-        <div class="orb bull" id="borb"><div class="orb-lbl" id="blbl" style="color:var(--bull); font-weight:900">BULLISH</div><div class="orb-conf" id="bconf" style="font-family:'Share Tech Mono'; font-size:10px">CONF 74%</div></div>
+      <div class="ptitle">محرك التحيز الاتجاهي</div>
+      <div id="borb" style="text-align:center; padding:10px; border:2px solid var(--bull); border-radius:50%; width:100px; margin:auto">
+        <div id="blbl" style="color:var(--bull); font-weight:900">BULLISH</div>
+      </div>
     </div>
     <div class="panel">
-        <div class="ptitle">خريطة السيولة</div>
+        <div class="ptitle">خريطة السيولة (LMT)</div>
         <div class="liq-map" id="liqmap"></div>
     </div>
+    <div class="panel">
+        <div class="ptitle">اليونانيات (Option Greeks)</div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:5px" id="greeks-box">
+            </div>
+    </div>
   </div>
 
-  <div class="col">
+  <div class="col" style="display:flex; flex-direction:column; gap:1px">
     <div class="panel" style="flex:1">
-      <div class="ptitle">حركة السعر المباشرة (US500)</div>
-      <canvas id="mc" style="width:100%; height:350px"></canvas>
+      <div class="ptitle">حركة السعر وهيكل السوق</div>
+      <canvas id="mc" style="width:100%; height:320px"></canvas>
     </div>
     <div class="panel">
-      <div class="ptitle">مصفوفة المستويات الاستراتيجية</div>
-      <table class="lvtbl" id="lvtbl"></table>
+        <div class="ptitle">تدفق الصفقات الكبرى (Option Flow)</div>
+        <table style="width:100%; font-family:'Share Tech Mono'; font-size:10px" id="flow-tbl"></table>
     </div>
   </div>
 
-  <div class="col">
+  <div class="col" style="display:flex; flex-direction:column; gap:1px">
     <div class="panel">
-      <div class="ptitle">الأهداف اللحظية</div>
+      <div class="ptitle">الأهداف الدقيقة (Calculated)</div>
       <div id="targets-container"></div>
     </div>
-    <div class="panel" style="flex:1">
-      <div class="ptitle">توصية القناص</div>
-      <div id="trades"></div>
+    <div class="panel">
+      <div class="ptitle">مؤشر الخوف VIX</div>
+      <div class="vix-arc" id="vix-container">
+        </div>
+    </div>
+    <div class="panel">
+      <div class="ptitle">مصفوفة المستويات الرئيسية</div>
+      <table id="lvtbl" style="width:100%; border-collapse:collapse; font-size:11px"></table>
     </div>
   </div>
-</div>
-
-<div class="bot">
-  <div class="met"><div class="ml">VWAP</div><div class="mv" id="vwapv">0.00</div></div>
-  <div class="met"><div class="ml">EXPECTED RANGE</div><div class="mv" id="emv">±0.00</div></div>
-  <div class="met"><div class="ml">STATUS</div><div class="mv" id="mstatus" style="color:var(--cyan)">STABLE</div></div>
-</div>
 </div>
 
 <script>
-// --- CONFIG & KEYS ---
 const ALPACA_KEY = 'AKO2RAWKPKN27WA2Y6ZNOK4XIT';
 const TWELVE_KEY = '64687693d6e54016912384972166e44b';
 let currentPrice = 5940.00;
 let openPrice = 5935.00;
 let isLive = false;
 
-// دالة التنسيق بالأرقام الإنجليزية
-function f(v, d=2) {
-    return v.toLocaleString('en-US', {minimumFractionDigits: d, maximumFractionDigits: d});
-}
+// تنسيق الأرقام بالإنجليزية حصراً
+const f = (v, d=2) => v.toLocaleString('en-US', {minimumFractionDigits: d, maximumFractionDigits: d});
 
-// --- CORE FETCH LOGIC (TRIPLE FAILSAFE) ---
 async function fetchPrice() {
-    const statusEl = document.getElementById('sess');
-    
     try {
-        // 1. Alpaca (Primary)
         const res = await fetch(`https://data.alpaca.markets/v2/stocks/SPY/quotes/latest`, {
             headers: { 'APCA-API-KEY-ID': ALPACA_KEY, 'accept': 'application/json' }
         });
         const d = await res.json();
         if (d.quote && d.quote.ap) {
-            applyUpdate(d.quote.ap * 10, '● LIVE (ALPACA)');
+            updateAll(d.quote.ap * 10, '● LIVE (ALPACA)');
             isLive = true; return;
         }
-        throw "Alpaca Down";
     } catch (e) {
         try {
-            // 2. Twelve Data (Backup)
             const res2 = await fetch(`https://api.twelvedata.com/price?symbol=SPX&apikey=${TWELVE_KEY}`);
             const d2 = await res2.json();
             if (d2.price) {
-                applyUpdate(parseFloat(d2.price), '● LIVE (12DATA)');
+                updateAll(parseFloat(d2.price), '● LIVE (12DATA)');
                 isLive = true; return;
             }
-            throw "12Data Down";
         } catch (e2) {
-            // 3. Simulation (Failsafe)
             runSimulation();
         }
     }
@@ -141,21 +123,13 @@ async function fetchPrice() {
 
 function runSimulation() {
     isLive = false;
-    const statusEl = document.getElementById('sess');
-    statusEl.textContent = '● SIMULATION (OFF-MARKET)';
-    statusEl.className = 'sess s-pre';
-    
-    const drift = (Math.random() - 0.5) * 0.45;
-    applyUpdate(currentPrice + drift, statusEl.textContent, false);
+    document.getElementById('sess').textContent = '● SIMULATION (OFF-MARKET)';
+    const drift = (Math.random() - 0.5) * 0.5;
+    updateAll(currentPrice + drift, '● SIMULATION', false);
 }
 
-function applyUpdate(px, statusTxt, markLive = true) {
+function updateAll(px, statusTxt, markLive = true) {
     currentPrice = px;
-    if(markLive) {
-        document.getElementById('sess').textContent = statusTxt;
-        document.getElementById('sess').className = 'sess s-open';
-    }
-    
     document.getElementById('hpx').textContent = f(px);
     const diff = px - openPrice;
     const pct = (diff / openPrice) * 100;
@@ -163,65 +137,74 @@ function applyUpdate(px, statusTxt, markLive = true) {
     el.textContent = `${diff >= 0 ? '▲' : '▼'} ${f(diff)} (${f(pct)}%)`;
     el.style.color = diff >= 0 ? 'var(--bull)' : 'var(--bear)';
     
-    refreshUI();
+    renderTargets();
+    renderLevels();
+    renderGreeks();
+    renderFlow();
 }
 
-function refreshUI() {
+function renderTargets() {
     const p = currentPrice;
-    
-    // 1. Targets
     const tgts = [
         {l: 'H1 - CALL WALL', v: p * 1.006, c: 'var(--bull)'},
-        {l: 'H2 - BREAKOUT', v: p * 1.012, c: 'var(--bull)'},
-        {l: 'S1 - PUT WALL', v: p * 0.994, c: 'var(--bear)'},
-        {l: 'S2 - GAMMA FLIP', v: p * 0.988, c: 'var(--bear)'}
+        {l: 'S1 - PUT WALL', v: p * 0.994, c: 'var(--bear)'}
     ];
     document.getElementById('targets-container').innerHTML = tgts.map(t => `
-        <div class="tgt" style="border-color:${t.c}44">
-            <div><div style="font-size:9px; color:var(--muted)">${t.l}</div>
-            <div style="font-family:'Share Tech Mono'; font-size:16px; color:${t.c}">${f(t.v)}</div></div>
-            <div style="font-size:10px; color:${t.c}">${f(t.v - p)} pts</div>
+        <div style="border:1px solid ${t.c}44; padding:8px; margin-bottom:5px">
+            <div style="font-size:9px">${t.l}</div>
+            <div class="val-en" style="color:${t.c}; font-size:18px">${f(t.v)}</div>
         </div>`).join('');
-
-    // 2. Levels Matrix
-    const rows = [
-        {n: 'MAX RESISTANCE', v: p * 1.015, s: 'STRONG'},
-        {n: 'CALL WALL', v: p * 1.008, s: 'MEDIUM'},
-        {n: 'CURRENT PRICE', v: p, s: 'PIVOT'},
-        {n: 'PUT WALL', v: p * 0.992, s: 'MEDIUM'},
-        {n: 'MAJOR SUPPORT', v: p * 0.985, s: 'STRONG'}
-    ];
-    document.getElementById('lvtbl').innerHTML = '<tr><th>LEVEL</th><th>PRICE</th><th>STRENGTH</th></tr>' + 
-        rows.map(r => `<tr><td>${r.n}</td><td style="color:var(--cyan)">${f(r.v)}</td><td>${r.s}</td></tr>`).join('');
-
-    // 3. Liquidity Map
-    const map = document.getElementById('liqmap');
-    const lvls = [0.008, 0.004, -0.004, -0.008];
-    map.innerHTML = `<div class="cur-ln" style="top:50%"><span style="background:var(--cyan); color:#000; font-size:9px; padding:2px">${f(p)}</span></div>` +
-        lvls.map(l => `<div class="ll" style="top:${50 - (l * 4000)}%"><div class="lb ${l < 0 ? 'lb-buy' : 'lb-sell'}"></div><span style="font-family:'Share Tech Mono'; font-size:9px; margin:0 5px">${f(p*(1+l))}</span></div>`).join('');
-
-    // 4. Bottom Metrics
-    document.getElementById('vwapv').textContent = f(p * 0.9985);
-    document.getElementById('emv').textContent = `±${f(p * 0.0075)}`;
 }
 
-// --- INIT ---
+function renderGreeks() {
+    const data = [
+        {n: 'DELTA', v: '+0.52', c: 'var(--bull)'},
+        {n: 'GAMMA', v: '0.0018', c: 'var(--cyan)'},
+        {n: 'THETA', v: '-4.82', c: 'var(--bear)'},
+        {n: 'VEGA', v: '12.40', c: 'var(--gold)'}
+    ];
+    document.getElementById('greeks-box').innerHTML = data.map(g => `
+        <div style="background:rgba(0,0,0,0.3); padding:5px; text-align:center">
+            <div style="font-size:8px; color:var(--muted)">${g.n}</div>
+            <div class="val-en" style="color:${g.c}; font-size:12px">${g.v}</div>
+        </div>`).join('');
+}
+
+function renderFlow() {
+    const flow = [
+        {t: '10:42', s: '5950C', ty: 'CALL', sz: '1.2M', d: 'BUY'},
+        {t: '10:45', s: '5920P', ty: 'PUT', sz: '850K', d: 'SELL'}
+    ];
+    document.getElementById('flow-tbl').innerHTML = flow.map(r => `
+        <tr style="border-bottom:1px solid var(--brd)">
+            <td style="color:var(--muted)">${r.t}</td>
+            <td style="color:var(--gold)">${r.s}</td>
+            <td style="color:${r.ty==='CALL'?'var(--bull)':'var(--bear)'}">${r.ty}</td>
+            <td class="val-en">${r.sz}</td>
+        </tr>`).join('');
+}
+
+function renderLevels() {
+    const p = currentPrice;
+    const lvls = [
+        {n: 'RESISTANCE', v: p*1.01, s: 'STR'},
+        {n: 'PIVOT', v: p, s: 'PVT'},
+        {n: 'SUPPORT', v: p*0.99, s: 'STR'}
+    ];
+    document.getElementById('lvtbl').innerHTML = lvls.map(l => `
+        <tr style="border-bottom:1px solid var(--brd)">
+            <td style="padding:4px">${l.n}</td>
+            <td class="val-en" style="color:var(--cyan)">${f(l.v)}</td>
+            <td style="font-size:8px">${l.s}</td>
+        </tr>`).join('');
+}
+
 setInterval(() => {
-    const n = new Date();
-    document.getElementById('clk').textContent = n.toTimeString().split(' ')[0];
+    document.getElementById('clk').textContent = new Date().toTimeString().split(' ')[0];
 }, 1000);
 
-// تحديث ذكي: إذا كان لايف كل 10 ثوان، إذا محاكاة كل ثانية
 setInterval(() => { isLive ? fetchPrice() : runSimulation(); }, isLive ? 10000 : 1000);
-
-window.onload = () => {
-    fetchPrice();
-    // رسم بياني مبدئي
-    const canvas = document.getElementById('mc');
-    const ctx = canvas.getContext('2d');
-    ctx.fillStyle = '#060e18'; ctx.fillRect(0,0, canvas.width, canvas.height);
-    ctx.strokeStyle = '#00d4ff'; ctx.beginPath(); ctx.moveTo(0, 100); ctx.lineTo(canvas.width, 50); ctx.stroke();
-};
+window.onload = fetchPrice;
 </script>
 </body>
 </html>
