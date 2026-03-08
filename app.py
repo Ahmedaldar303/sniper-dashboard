@@ -890,7 +890,22 @@ def render_pnl_chart(strategies):
 # MAIN APP
 # ═══════════════════════════════════════════════
 def main():
-    # ── LANGUAGE TOGGLE ──
+    # ── SESSION STATE INIT (must be FIRST) ──
+    if 'lang' not in st.session_state:
+        st.session_state.lang = 'ar'
+    if 'agent_results' not in st.session_state:
+        st.session_state.agent_results = {'chart': '', 'contract': '', 'strategy': ''}
+    if 'chain_df' not in st.session_state:
+        st.session_state.chain_df = None
+    if 'filtered_df' not in st.session_state:
+        st.session_state.filtered_df = None
+    if 'api_key' not in st.session_state:
+        try:
+            st.session_state.api_key = st.secrets.get("ANTHROPIC_API_KEY", "")
+        except Exception:
+            st.session_state.api_key = ""
+
+    # ── LANGUAGE ──
     lang = st.session_state.lang
     is_ar = (lang == 'ar')
 
@@ -993,22 +1008,7 @@ def main():
     </div>
     """, unsafe_allow_html=True)
 
-    # ── SESSION STATE ──
-    if 'agent_results' not in st.session_state:
-        st.session_state.agent_results = {'chart': '', 'contract': '', 'strategy': ''}
-    if 'chain_df' not in st.session_state:
-        st.session_state.chain_df = None
-    if 'filtered_df' not in st.session_state:
-        st.session_state.filtered_df = None
-    if 'lang' not in st.session_state:
-        st.session_state.lang = 'ar'  # Default Arabic
-
-    if 'api_key' not in st.session_state:
-        # Load from Streamlit Secrets if available (for GitHub/Cloud deployment)
-        try:
-            st.session_state.api_key = st.secrets.get("ANTHROPIC_API_KEY", "")
-        except Exception:
-            st.session_state.api_key = ""
+    # (session state initialized at top of main)
 
     # ── LANGUAGE TOGGLE BUTTON ──
     _lang_col1, _lang_col2 = st.columns([10, 1])
