@@ -1,34 +1,27 @@
-name: Update Sniper Dashboard
-
+name: Update Data
 on:
   schedule:
-    - cron: '*/1 * * * *' # يعمل كل دقيقة واحدة
-  workflow_dispatch: # يسمح لك بتشغيله يدوياً للتجربة
-
+    - cron: '*/1 * * * *' # كل دقيقة
+  workflow_dispatch:
 jobs:
-  build:
+  update:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
+      - uses: actions/checkout@v2
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
           python-version: '3.x'
-
-      - name: Install dependencies
+      - name: Install requests
         run: pip install requests
-
       - name: Run script
         env:
-          TRADIER_TOKEN: ${{ secrets.TRADIER_TOKEN }} # استخدام السر الذي خزنته
+          TRADIER_TOKEN: ${{ secrets.TRADIER_TOKEN }}
         run: python update_data.py
-
-      - name: Commit and push changes
+      - name: Commit changes
         run: |
-          git config --global user.name "GitHub Action"
-          git config --global user.email "action@github.com"
+          git config --global user.name "Sniper Bot"
+          git config --global user.email "bot@github.com"
           git add options_data.json
-          git commit -m "تحديث بيانات القناص تلقائياً" || exit 0
+          git commit -m "Auto update data" || exit 0
           git push
