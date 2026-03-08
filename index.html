@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sniper Dashboard - SPX</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f4f7f6; padding: 20px; }
+        table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        th { background: #1f2937; color: white; padding: 12px; }
+        td { padding: 10px; border-bottom: 1px solid #eee; text-align: center; }
+        .strike { color: #1a73e8; font-weight: bold; }
+        .cost { color: #d32f2f; }
+        .profit { color: #388e3c; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h2 style="text-align: center;">لوحة أهداف القناص - SPX</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>السترايك</th>
+                <th>النوع</th>
+                <th>التكلفة (Max Loss)</th>
+                <th>صافي الربح</th>
+                <th>Delta</th>
+                <th>Volume</th>
+            </tr>
+        </thead>
+        <tbody id="options-table-body">
+            </tbody>
+    </table>
+
+    <script>
+        function loadData() {
+            fetch('options_data.json')
+                .then(response => response.json())
+                .then(data => {
+                    const tbody = document.getElementById('options-table-body');
+                    tbody.innerHTML = data.map(row => `
+                        <tr>
+                            <td class="strike">${row.strike}</td>
+                            <td>${row.type}</td>
+                            <td class="cost">$${row.cost.toFixed(2)}</td>
+                            <td class="profit">$${row.profit.toFixed(2)}</td>
+                            <td>${row.delta.toFixed(3)}</td>
+                            <td>${row.volume}</td>
+                        </tr>
+                    `).join('');
+                })
+                .catch(err => console.error('Data not ready yet. Wait for GitHub Action to run.'));
+        }
+        loadData();
+        setInterval(loadData, 60000); // تحديث الصفحة كل دقيقة
+    </script>
+</body>
+</html>
