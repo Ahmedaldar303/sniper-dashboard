@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sniper Dashboard</title>
+    <title>Sniper AI Dashboard</title>
     <style>
         body { font-family: Arial, sans-serif; background: #0f172a; color: #f8fafc; margin: 0; padding: 15px; }
         .dashboard-header { background: #1e293b; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-right: 5px solid #3b82f6; }
@@ -16,12 +16,14 @@
         th { background: #0f172a; color: #94a3b8; }
         .cost { color: #ef4444; font-weight: bold; }
         .profit { color: #22c55e; font-weight: bold; }
-        .strike { color: #3b82f6; font-weight: bold; }
+        .strike { color: #3b82f6; font-weight: bold; font-size: 1.1em; }
+        .rr-good { background: rgba(34, 197, 94, 0.2); color: #4ade80; font-weight: bold; border-radius: 4px; padding: 2px 5px; }
+        .rr-bad { color: #f87171; }
     </style>
 </head>
 <body>
     <div class="dashboard-header">
-        <h2>🎯 نظرة القناص</h2>
+        <h2>🧠 الرادار الإحصائي للقناص</h2>
         <div class="market-data">
             <span class="direction" id="direction-val">الاتجاه: جاري التحديث...</span>
             <span class="spx-data">SPX (دعم: <span id="spx-sup"></span> | مقاومة: <span id="spx-res"></span>)</span>
@@ -36,9 +38,9 @@
                 <th>صافي الربح</th>
                 <th>السترايك</th>
                 <th>النوع</th>
+                <th>العائد/المخاطرة (R/R)</th>
+                <th>احتمالية النجاح (POP)</th>
                 <th>Delta</th>
-                <th>Theta</th>
-                <th>السيولة</th>
             </tr>
         </thead>
         <tbody id="table-body"></tbody>
@@ -56,17 +58,19 @@
                 document.getElementById('ndx-sup').innerText = data.market_context.ndx_support;
                 document.getElementById('ndx-res').innerText = data.market_context.ndx_resistance;
 
-                document.getElementById('table-body').innerHTML = data.options.map(row => `
+                document.getElementById('table-body').innerHTML = data.options.map(row => {
+                    const rrClass = row.rr_ratio >= 1.5 ? 'rr-good' : 'rr-bad';
+                    return `
                     <tr>
                         <td class="cost">$${row.cost.toFixed(2)}</td>
                         <td class="profit">$${row.profit.toFixed(2)}</td>
                         <td class="strike">${row.strike}</td>
                         <td>${row.type}</td>
+                        <td><span class="${rrClass}">${row.rr_ratio}x</span></td>
+                        <td>%${row.win_prob}</td>
                         <td>${row.delta.toFixed(3)}</td>
-                        <td>${row.theta.toFixed(3)}</td>
-                        <td>${row.volume}</td>
                     </tr>
-                `).join('');
+                `}).join('');
             } catch (e) { console.log('Waiting for data...'); }
         }
         loadData();
