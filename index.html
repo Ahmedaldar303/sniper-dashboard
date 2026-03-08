@@ -3,55 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sniper Dashboard - SPX</title>
+    <title>Sniper Dashboard</title>
     <style>
-        body { font-family: Arial, sans-serif; background: #f4f7f6; padding: 20px; }
-        table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        th { background: #1f2937; color: white; padding: 12px; }
-        td { padding: 10px; border-bottom: 1px solid #eee; text-align: center; }
-        .strike { color: #1a73e8; font-weight: bold; }
-        .cost { color: #d32f2f; }
-        .profit { color: #388e3c; font-weight: bold; }
+        body { font-family: Arial, sans-serif; background: #0f172a; color: #f8fafc; margin: 0; padding: 15px; }
+        .dashboard-header { background: #1e293b; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-right: 5px solid #3b82f6; }
+        .market-data { display: flex; justify-content: space-between; flex-wrap: wrap; margin-top: 10px; font-weight: bold; }
+        .spx-data { color: #3b82f6; }
+        .ndx-data { color: #8b5cf6; }
+        .direction { color: #22c55e; font-size: 1.1em; }
+        table { width: 100%; border-collapse: collapse; background: #1e293b; border-radius: 8px; overflow: hidden; }
+        th, td { padding: 12px; text-align: center; border-bottom: 1px solid #334155; }
+        th { background: #0f172a; color: #94a3b8; }
+        .cost { color: #ef4444; font-weight: bold; }
+        .profit { color: #22c55e; font-weight: bold; }
+        .strike { color: #3b82f6; font-weight: bold; }
     </style>
 </head>
 <body>
-    <h2 style="text-align: center;">لوحة أهداف القناص - SPX</h2>
+    <div class="dashboard-header">
+        <h2>🎯 نظرة القناص</h2>
+        <div class="market-data">
+            <span class="direction" id="direction-val">الاتجاه: جاري التحديث...</span>
+            <span class="spx-data">SPX (دعم: <span id="spx-sup"></span> | مقاومة: <span id="spx-res"></span>)</span>
+            <span class="ndx-data">NDX (دعم: <span id="ndx-sup"></span> | مقاومة: <span id="ndx-res"></span>)</span>
+        </div>
+    </div>
+
     <table>
         <thead>
             <tr>
+                <th>التكلفة (أقصى خسارة)</th>
+                <th>صافي الربح</th>
                 <th>السترايك</th>
                 <th>النوع</th>
-                <th>التكلفة (Max Loss)</th>
-                <th>صافي الربح</th>
                 <th>Delta</th>
-                <th>Volume</th>
+                <th>Theta</th>
+                <th>السيولة</th>
             </tr>
         </thead>
-        <tbody id="options-table-body">
-            </tbody>
+        <tbody id="table-body"></tbody>
     </table>
 
     <script>
-        function loadData() {
-            fetch('options_data.json')
-                .then(response => response.json())
-                .then(data => {
-                    const tbody = document.getElementById('options-table-body');
-                    tbody.innerHTML = data.map(row => `
-                        <tr>
-                            <td class="strike">${row.strike}</td>
-                            <td>${row.type}</td>
-                            <td class="cost">$${row.cost.toFixed(2)}</td>
-                            <td class="profit">$${row.profit.toFixed(2)}</td>
-                            <td>${row.delta.toFixed(3)}</td>
-                            <td>${row.volume}</td>
-                        </tr>
-                    `).join('');
-                })
-                .catch(err => console.error('Data not ready yet. Wait for GitHub Action to run.'));
+        async function loadData() {
+            try {
+                const res = await fetch('options_data.json');
+                const data = await res.json();
+                
+                document.getElementById('direction-val').innerText = 'الاتجاه: ' + data.market_context.direction;
+                document.getElementById('spx-sup').innerText = data.market_context.spx_support;
+                document.getElementById('spx-res').innerText = data.market_context.spx_resistance;
+                document.getElementById('ndx-sup').innerText = data.market_context.ndx_support;
+                document.getElementById('ndx-res').innerText = data.market_context.ndx_resistance;
+
+                document.getElementById('table-body').innerHTML = data.options.map(row => `
+                    <tr>
+                        <td class="cost">$${row.cost.toFixed(2)}</td>
+                        <td class="profit">$${row.profit.toFixed(2)}</td>
+                        <td class="strike">${row.strike}</td>
+                        <td>${row.type}</td>
+                        <td>${row.delta.toFixed(3)}</td>
+                        <td>${row.theta.toFixed(3)}</td>
+                        <td>${row.volume}</td>
+                    </tr>
+                `).join('');
+            } catch (e) { console.log('Waiting for data...'); }
         }
         loadData();
-        setInterval(loadData, 60000); // تحديث الصفحة كل دقيقة
+        setInterval(loadData, 60000);
     </script>
 </body>
 </html>
