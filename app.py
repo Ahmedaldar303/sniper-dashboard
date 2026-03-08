@@ -901,7 +901,11 @@ def main():
     if 'filtered_df' not in st.session_state:
         st.session_state.filtered_df = None
     if 'api_key' not in st.session_state:
-        st.session_state.api_key = ''
+        # Load from Streamlit Secrets if available (for GitHub/Cloud deployment)
+        try:
+            st.session_state.api_key = st.secrets.get("ANTHROPIC_API_KEY", "")
+        except Exception:
+            st.session_state.api_key = ""
 
     # ── CONTROL PANEL ──
     with st.container():
@@ -910,9 +914,13 @@ def main():
         col1, col2, col3, col4, col5, col6 = st.columns([2, 1.5, 1, 1, 1, 1])
         
         with col1:
-            st.markdown('<p style="font-family:\'JetBrains Mono\',monospace; font-size:10px; color:#3d5a78; letter-spacing:2px; margin-bottom:4px;">ANTHROPIC API KEY</p>', unsafe_allow_html=True)
-            api_key = st.text_input("", value=st.session_state.api_key, 
-                                     type="password", placeholder="sk-ant-...", 
+            _secret_loaded = bool(st.session_state.api_key)
+            _label_color = "#00ff88" if _secret_loaded else "#3d5a78"
+            _label_text = "API KEY ✓ LOADED FROM SECRETS" if _secret_loaded else "ANTHROPIC API KEY"
+            st.markdown(f'<p style="font-family:\'JetBrains Mono\',monospace; font-size:10px; color:{_label_color}; letter-spacing:2px; margin-bottom:4px;">{_label_text}</p>', unsafe_allow_html=True)
+            api_key = st.text_input("", value=st.session_state.api_key,
+                                     type="password",
+                                     placeholder="sk-ant-...  (or set via Streamlit Secrets)",
                                      label_visibility="collapsed", key="api_input")
             st.session_state.api_key = api_key
         
