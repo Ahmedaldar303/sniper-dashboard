@@ -3,11 +3,8 @@ import json
 import os
 
 def fetch_options_data():
-    # سحب التوكن من GitHub Secrets التي أضفتها
     ACCESS_TOKEN = os.environ.get("TRADIER_TOKEN") 
-    
     symbol = "SPX"
-    # تاريخ انتهاء قريب متاح في الـ Sandbox (تم تحديثه ليكون متوافقاً)
     expiration = "2026-03-20" 
     
     url = "https://sandbox.tradier.com/v1/markets/options/chains"
@@ -25,22 +22,31 @@ def fetch_options_data():
                 bid = opt.get('bid', 0)
                 ask = opt.get('ask', 0)
                 processed_data.append({
+                    "cost": bid * 100,
+                    "profit": (ask - bid) * 100,
                     "strike": opt.get('strike'),
                     "type": opt.get('option_type').upper(),
-                    "cost": bid * 100,  # أقصى خسارة (التكلفة) كما طلبت
-                    "profit": (ask - bid) * 100,  # صافي الربح
                     "delta": opt.get('greeks', {}).get('delta', 0) if opt.get('greeks') else 0,
+                    "theta": opt.get('greeks', {}).get('theta', 0) if opt.get('greeks') else 0,
                     "volume": opt.get('volume', 0)
                 })
             
-            # حفظ البيانات في ملف JSON ليقرأه المتصفح
+            dashboard_data = {
+                "market_context": {
+                    "direction": "صاعد (Bullish)",
+                    "spx_support": "5080",
+                    "spx_resistance": "5150",
+                    "ndx_support": "17900",
+                    "ndx_resistance": "18200"
+                },
+                "options": processed_data
+            }
+
             with open('options_data.json', 'w') as f:
-                json.dump(processed_data, f, indent=4)
-            print("Done: options_data.json updated.")
-        else:
-            print(f"Error: {response.status_code}")
+                json.dump(dashboard_data, f, indent=4)
+            print("Done")
     except Exception as e:
-        print(f"Exception: {e}")
+        print(f"Error: {e}")
 
 if __name__ == "__main__":
     fetch_options_data()
