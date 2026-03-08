@@ -38,7 +38,7 @@ st.set_page_config(
 # ═══════════════════════════════════════════════
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Bebas+Neue&family=Space+Grotesk:wght@300;400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Bebas+Neue&family=Space+Grotesk:wght@300;400;600;700&family=Cairo:wght@300;400;600;700;900&display=swap');
 
 :root {
     --bg-void: #020408;
@@ -391,6 +391,25 @@ footer { display: none !important; }
     color: var(--accent-cyan) !important;
     border-bottom-color: var(--accent-cyan) !important;
 }
+
+
+/* ── RTL / ARABIC SUPPORT ── */
+.rtl { direction: rtl; text-align: right; font-family: 'Cairo', sans-serif !important; }
+.rtl .panel-title, .rtl .logo-text { font-family: 'Cairo', sans-serif !important; letter-spacing: 0 !important; }
+.rtl .agent-name, .rtl .agent-status, .rtl .agent-output { font-family: 'Cairo', sans-serif !important; }
+.rtl .ticker-bar { direction: rtl; }
+.lang-btn {
+    background: #1a2d45 !important;
+    border: 1px solid #00d4ff44 !important;
+    color: #00d4ff !important;
+    border-radius: 8px !important;
+    font-family: 'Cairo', sans-serif !important;
+    font-size: 13px !important;
+    cursor: pointer;
+    padding: 6px 14px !important;
+    transition: all 0.3s;
+}
+.lang-btn:hover { background: #00d4ff22 !important; }
 
 /* ── SCROLLBAR ── */
 ::-webkit-scrollbar { width: 4px; height: 4px; }
@@ -871,23 +890,104 @@ def render_pnl_chart(strategies):
 # MAIN APP
 # ═══════════════════════════════════════════════
 def main():
+    # ── LANGUAGE TOGGLE ──
+    lang = st.session_state.lang
+    is_ar = (lang == 'ar')
+
+    T = {
+        'title':        'كيوانتم للخيارات الذكية' if is_ar else 'QUANTUM OPTIONS INTELLIGENCE',
+        'subtitle':     'منصة تداول بالذكاء الاصطناعي متعدد الوكلاء • v2.0' if is_ar else 'Multi-Agent AI Trading Platform • v2.0',
+        'agents_on':    'الوكلاء يعملون' if is_ar else 'AGENTS ONLINE',
+        'api_label':    'مفتاح Anthropic API' if is_ar else 'ANTHROPIC API KEY',
+        'api_loaded':   '✓ تم تحميل المفتاح' if is_ar else '✓ LOADED FROM SECRETS',
+        'api_ph':       'sk-ant-...  (أو أضفه في Streamlit Secrets)' if is_ar else 'sk-ant-...  (or set via Streamlit Secrets)',
+        'ticker':       'الرمز' if is_ar else 'TICKER',
+        'spot':         'السعر الحالي' if is_ar else 'SPOT PRICE',
+        'dte':          'أيام للانتهاء' if is_ar else 'DTE',
+        'iv':           'التقلب الضمني %' if is_ar else 'IV%',
+        'activate':     '⚡ تفعيل الوكلاء' if is_ar else '⚡ ACTIVATE AGENTS',
+        'symbol':       'الرمز' if is_ar else 'SYMBOL',
+        'spot_t':       'السعر' if is_ar else 'SPOT',
+        'atm_iv':       'التقلب ATM' if is_ar else 'ATM IV',
+        'dte_t':        'أيام' if is_ar else 'DTE',
+        'scanned':      'عقود مفحوصة' if is_ar else 'CONTRACTS SCANNED',
+        'pass_f':       'اجتاز Δ>|θ|' if is_ar else 'Δ>|θ| PASS',
+        'calls_p':      'كولز ناجحة' if is_ar else 'CALLS PASS',
+        'puts_p':       'بوتس ناجحة' if is_ar else 'PUTS PASS',
+        'atm_d':        'دلتا ATM' if is_ar else 'ATM DELTA',
+        'tab1':         '📊 الشارت والسوق' if is_ar else '📊  CHART & MARKET',
+        'tab2':         '🔗 سلسلة العقود' if is_ar else '🔗  OPTION CHAIN',
+        'tab3':         '⚡ فلتر Δ>|θ|' if is_ar else '⚡  FILTERED Δ>|θ|',
+        'tab4':         '🤖 مخرجات الوكلاء' if is_ar else '🤖  AGENT OUTPUTS',
+        'tab5':         '📐 مخطط الربح والخسارة' if is_ar else '📐  P&L DIAGRAM',
+        'agent1_name':  'الوكيل الأول — محلل الشارت' if is_ar else 'AGENT 1 — CHART ANALYST',
+        'agent1_stat':  '● يحلل هيكل السوق...' if is_ar else '● ANALYZING MARKET STRUCTURE...',
+        'agent2_name':  'الوكيل الثاني — فاحص العقود' if is_ar else 'AGENT 2 — CONTRACT SCANNER',
+        'agent2_stat':  '● يفحص فلتر Δ > |θ|...' if is_ar else '● SCANNING Δ > |θ| FILTER...',
+        'agent3_name':  'الوكيل الثالث — مهندس الاستراتيجيات' if is_ar else 'AGENT 3 — STRATEGY ARCHITECT',
+        'agent3_stat':  '● يبني الاستراتيجيات المركبة...' if is_ar else '● BUILDING COMPOSITE STRATEGIES...',
+        'no_key_err':   '⚠️ أدخل مفتاح Anthropic API لتفعيل الوكلاء.' if is_ar else '⚠️ Enter your Anthropic API key above to activate the AI agents.',
+        'agents_done':  '✅ انتهى الوكلاء الثلاثة من التحليل!' if is_ar else '✅ All 3 agents completed analysis successfully!',
+        'chart_title':  'حركة السعر' if is_ar else 'PRICE ACTION',
+        'greeks_title': 'يونانيات ATM' if is_ar else 'ATM GREEKS',
+        'chain_title':  'سلسلة الخيارات الكاملة' if is_ar else 'FULL OPTION CHAIN',
+        'filter_title': 'العقود المفلترة — Δ > |θ|' if is_ar else 'FILTERED CONTRACTS — Δ > |θ|',
+        'agents_title': 'مخرجات الوكلاء الذكيين' if is_ar else 'MULTI-AGENT AI OUTPUTS',
+        'pnl_title':    'منشئ مخطط الربح والخسارة' if is_ar else 'P&L DIAGRAM BUILDER',
+        'top_calls':    '▶ أفضل الكولز' if is_ar else '▶ TOP CALLS',
+        'top_puts':     '▶ أفضل البوتس' if is_ar else '▶ TOP PUTS',
+        'stand_by':     'الوكلاء في وضع الانتظار' if is_ar else 'AGENTS STANDING BY',
+        'enter_key':    'أدخل مفتاح Anthropic واضغط ⚡ تفعيل الوكلاء' if is_ar else 'Enter your Anthropic API key and click ⚡ ACTIVATE AGENTS',
+        'type_f':       'فلتر النوع' if is_ar else 'Type Filter',
+        'money_f':      'القيمة الجوهرية' if is_ar else 'Moneyness',
+        'preset':       'نموذج الاستراتيجية' if is_ar else 'Strategy Preset',
+        'width':        'عرض السبريد ($)' if is_ar else 'Spread Width ($)',
+        'legs_table':   'جدول الأرجل' if is_ar else 'LEGS TABLE',
+        'pass_rate':    'معدل النجاح' if is_ar else 'pass rate',
+        'avg_edge':     'متوسط نسبة الحافة' if is_ar else 'Avg Edge Ratio',
+        'avg_iv':       'متوسط التقلب (المفلتر)' if is_ar else 'Avg IV (Filtered)',
+        'best_edge':    'أفضل نسبة حافة' if is_ar else 'Best Edge Ratio',
+        'total_pass':   'إجمالي الناجحة' if is_ar else 'Total Passing',
+        'filter_cond':  'شرط الفلتر: |Δ| > |θ| — العقود التي يتجاوز فيها التعرض الاتجاهي تكلفة تآكل الوقت. مرتبة بـ Edge Ratio.' if is_ar else 'FILTER CONDITION: |Δ| > |θ| — Only contracts where absolute Delta exceeds absolute Theta. Sorted by Edge Ratio.',
+        'delta_check':  'فحص Δ > |θ|' if is_ar else 'Δ > |θ| CHECK',
+        'pass_lbl':     '✓ ناجح' if is_ar else '✓ PASS',
+        'fail_lbl':     '✗ راسب' if is_ar else '✗ FAIL',
+        'lang_btn':     '🇬🇧 English' if is_ar else '🇸🇦 عربي',
+        'dir':          'rtl' if is_ar else 'ltr',
+        'footer':       'كيوانتم للخيارات الذكية v2.0 — منصة الذكاء الاصطناعي متعدد الوكلاء' if is_ar else 'QUANTUM OPTIONS INTELLIGENCE v2.0 — MULTI-AGENT AI PLATFORM',
+        'disclaimer':   '⚠️ للأغراض التعليمية فقط | تداول الخيارات ينطوي على مخاطر عالية | ليس نصيحة مالية' if is_ar else '⚠️ FOR EDUCATIONAL USE ONLY | OPTIONS TRADING INVOLVES SUBSTANTIAL RISK | NOT FINANCIAL ADVICE',
+        'atm_strike':   'سعر التنفيذ ATM' if is_ar else 'ATM STRIKE',
+        'call_price':   'سعر الكول' if is_ar else 'CALL PRICE',
+        'max_loss':     'أقصى خسارة' if is_ar else 'MAX LOSS',
+        'breakeven':    'نقطة التعادل' if is_ar else 'BREAKEVEN',
+        'edge_ratio':   'نسبة الحافة' if is_ar else 'EDGE RATIO',
+        'live_chart':   'شارت مباشر' if is_ar else 'LIVE CHART',
+        'live':         'مباشر' if is_ar else 'LIVE',
+        'all_c':        'الكل' if is_ar else 'ALL',
+        'net_credit':   'صافي الائتمان' if is_ar else 'NET CREDIT',
+        'net_debit':    'صافي الخصم' if is_ar else 'NET DEBIT',
+    }
+    st.session_state['T'] = T
+
     # ── HEADER ──
-    st.markdown("""
-    <div class="master-header">
+    dir_attr = 'rtl' if is_ar else 'ltr'
+    font_style = "font-family:'Cairo',sans-serif;" if is_ar else ""
+    st.markdown(f"""
+    <div class="master-header" dir="{dir_attr}" style="{font_style}">
         <div class="logo-section">
             <div class="logo-icon">⚡</div>
             <div>
-                <div class="logo-text">QUANTUM OPTIONS INTELLIGENCE</div>
-                <div class="logo-sub">Multi-Agent AI Trading Platform • v2.0</div>
+                <div class="logo-text" style="{'font-family:Cairo,sans-serif;letter-spacing:0;' if is_ar else ''}">{T['title']}</div>
+                <div class="logo-sub" style="{'font-family:Cairo,sans-serif;letter-spacing:0;' if is_ar else ''}">{T['subtitle']}</div>
             </div>
         </div>
         <div style="display:flex; gap:12px; align-items:center;">
-            <div class="live-badge">
+            <div class="live-badge" style="{'font-family:Cairo,sans-serif;' if is_ar else ''}">
                 <div class="live-dot"></div>
-                AGENTS ONLINE
+                {T['agents_on']}
             </div>
             <div style="font-family:'JetBrains Mono',monospace; font-size:11px; color:#3d5a78;">
-    """ + datetime.now().strftime("%Y-%m-%d %H:%M:%S UTC") + """
+    """ + datetime.now().strftime("%Y-%m-%d %H:%M:%S UTC") + f"""
             </div>
         </div>
     </div>
@@ -900,12 +1000,22 @@ def main():
         st.session_state.chain_df = None
     if 'filtered_df' not in st.session_state:
         st.session_state.filtered_df = None
+    if 'lang' not in st.session_state:
+        st.session_state.lang = 'ar'  # Default Arabic
+
     if 'api_key' not in st.session_state:
         # Load from Streamlit Secrets if available (for GitHub/Cloud deployment)
         try:
             st.session_state.api_key = st.secrets.get("ANTHROPIC_API_KEY", "")
         except Exception:
             st.session_state.api_key = ""
+
+    # ── LANGUAGE TOGGLE BUTTON ──
+    _lang_col1, _lang_col2 = st.columns([10, 1])
+    with _lang_col2:
+        if st.button(T['lang_btn'], key='lang_toggle'):
+            st.session_state.lang = 'en' if is_ar else 'ar'
+            st.rerun()
 
     # ── CONTROL PANEL ──
     with st.container():
@@ -916,37 +1026,42 @@ def main():
         with col1:
             _secret_loaded = bool(st.session_state.api_key)
             _label_color = "#00ff88" if _secret_loaded else "#3d5a78"
-            _label_text = "API KEY ✓ LOADED FROM SECRETS" if _secret_loaded else "ANTHROPIC API KEY"
-            st.markdown(f'<p style="font-family:\'JetBrains Mono\',monospace; font-size:10px; color:{_label_color}; letter-spacing:2px; margin-bottom:4px;">{_label_text}</p>', unsafe_allow_html=True)
+            _label_text = T['api_loaded'] if _secret_loaded else T['api_label']
+            _font = "font-family:'Cairo',sans-serif;" if is_ar else "font-family:'JetBrains Mono',monospace;"
+            st.markdown(f'<p style="{_font} font-size:10px; color:{_label_color}; letter-spacing:2px; margin-bottom:4px;">{_label_text}</p>', unsafe_allow_html=True)
             api_key = st.text_input("", value=st.session_state.api_key,
                                      type="password",
-                                     placeholder="sk-ant-...  (or set via Streamlit Secrets)",
+                                     placeholder=T['api_ph'],
                                      label_visibility="collapsed", key="api_input")
             st.session_state.api_key = api_key
         
         with col2:
-            st.markdown('<p style="font-family:\'JetBrains Mono\',monospace; font-size:10px; color:#3d5a78; letter-spacing:2px; margin-bottom:4px;">TICKER</p>', unsafe_allow_html=True)
+            _f2 = "font-family:'Cairo',sans-serif;" if is_ar else "font-family:'JetBrains Mono',monospace;"
+            st.markdown(f'<p style="{_f2} font-size:10px; color:#3d5a78; letter-spacing:2px; margin-bottom:4px;">{T["ticker"]}</p>', unsafe_allow_html=True)
             symbol = st.selectbox("", ["SPY", "QQQ", "AAPL", "TSLA", "NVDA", "AMZN", "META"],
                                    label_visibility="collapsed")
         
         with col3:
-            st.markdown('<p style="font-family:\'JetBrains Mono\',monospace; font-size:10px; color:#3d5a78; letter-spacing:2px; margin-bottom:4px;">SPOT PRICE</p>', unsafe_allow_html=True)
+            _f3 = "font-family:'Cairo',sans-serif;" if is_ar else "font-family:'JetBrains Mono',monospace;"
+            st.markdown(f'<p style="{_f3} font-size:10px; color:#3d5a78; letter-spacing:2px; margin-bottom:4px;">{T["spot"]}</p>', unsafe_allow_html=True)
             spot_price = st.number_input("", value=580.0, step=1.0, 
                                           label_visibility="collapsed", key="spot")
         
         with col4:
-            st.markdown('<p style="font-family:\'JetBrains Mono\',monospace; font-size:10px; color:#3d5a78; letter-spacing:2px; margin-bottom:4px;">DTE</p>', unsafe_allow_html=True)
+            _f4 = "font-family:'Cairo',sans-serif;" if is_ar else "font-family:'JetBrains Mono',monospace;"
+            st.markdown(f'<p style="{_f4} font-size:10px; color:#3d5a78; letter-spacing:2px; margin-bottom:4px;">{T["dte"]}</p>', unsafe_allow_html=True)
             dte = st.selectbox("", [7, 14, 21, 30, 45, 60, 90],
                                 label_visibility="collapsed", index=3)
         
         with col5:
-            st.markdown('<p style="font-family:\'JetBrains Mono\',monospace; font-size:10px; color:#3d5a78; letter-spacing:2px; margin-bottom:4px;">IV%</p>', unsafe_allow_html=True)
+            _f5 = "font-family:'Cairo',sans-serif;" if is_ar else "font-family:'JetBrains Mono',monospace;"
+            st.markdown(f'<p style="{_f5} font-size:10px; color:#3d5a78; letter-spacing:2px; margin-bottom:4px;">{T["iv"]}</p>', unsafe_allow_html=True)
             iv_pct = st.number_input("", value=20.0, step=0.5, 
                                       label_visibility="collapsed", key="iv")
         
         with col6:
             st.markdown('<div style="margin-top:22px;">', unsafe_allow_html=True)
-            run_agents = st.button("⚡ ACTIVATE AGENTS", key="run")
+            run_agents = st.button(T["activate"], key="run")
             st.markdown('</div>', unsafe_allow_html=True)
         
         st.markdown('</div>', unsafe_allow_html=True)
@@ -973,46 +1088,47 @@ def main():
     
     atm_call = chain_df[(chain_df['type'] == 'CALL') & (chain_df['strike'] >= S)].iloc[0] if len(chain_df) > 0 else None
     
+    _ticker_font = "font-family:'Cairo',sans-serif;" if is_ar else ""
     st.markdown(f"""
-    <div class="ticker-bar">
+    <div class="ticker-bar" dir="{T['dir']}" style="{_ticker_font}">
         <div class="ticker-item">
-            <span class="ticker-label">SYMBOL</span>
+            <span class="ticker-label">{T['symbol']}</span>
             <span class="ticker-value" style="color:#00d4ff;">{symbol}</span>
         </div>
         <div class="ticker-item">
-            <span class="ticker-label">SPOT</span>
+            <span class="ticker-label">{T['spot_t']}</span>
             <span class="ticker-value">${S:,.2f}</span>
         </div>
         <div class="ticker-item">
-            <span class="ticker-label">ATM IV</span>
+            <span class="ticker-label">{T['atm_iv']}</span>
             <span class="ticker-value" style="color:#ffd700;">{iv_pct:.1f}%</span>
         </div>
         <div class="ticker-item">
-            <span class="ticker-label">DTE</span>
+            <span class="ticker-label">{T['dte_t']}</span>
             <span class="ticker-value">{dte}d</span>
         </div>
         <div class="ticker-item">
-            <span class="ticker-label">CONTRACTS SCANNED</span>
+            <span class="ticker-label">{T['scanned']}</span>
             <span class="ticker-value">{total_contracts}</span>
         </div>
         <div class="ticker-item">
-            <span class="ticker-label">Δ>|θ| PASS</span>
+            <span class="ticker-label">{T['pass_f']}</span>
             <span class="ticker-value" style="color:#00ff88;">{total_pass} ({pass_rate}%)</span>
         </div>
         <div class="ticker-item">
-            <span class="ticker-label">CALLS PASS</span>
+            <span class="ticker-label">{T['calls_p']}</span>
             <span class="ticker-value" style="color:#00ff88;">{calls_pass}</span>
         </div>
         <div class="ticker-item">
-            <span class="ticker-label">PUTS PASS</span>
+            <span class="ticker-label">{T['puts_p']}</span>
             <span class="ticker-value" style="color:#ff3355;">{puts_pass}</span>
         </div>
         <div class="ticker-item">
-            <span class="ticker-label">ATM DELTA</span>
+            <span class="ticker-label">{T['atm_d']}</span>
             <span class="ticker-value">{atm_call['delta']:.4f if atm_call is not None else 'N/A'}</span>
         </div>
         <div class="ticker-item">
-            <span class="ticker-label">ATM IV</span>
+            <span class="ticker-label">{T['atm_iv']}</span>
             <span class="ticker-value">{atm_call['iv']:.1f if atm_call is not None else 'N/A'}%</span>
         </div>
     </div>
@@ -1024,7 +1140,7 @@ def main():
     # ── AGENT RUN LOGIC ──
     if run_agents:
         if not api_key:
-            st.error("⚠️ Enter your Anthropic API key above to activate the AI agents.")
+            st.error(T["no_key_err"])
         else:
             client = anthropic.Anthropic(api_key=api_key)
             
@@ -1058,8 +1174,8 @@ FILTER STATS:
                     <div class="agent-header">
                         <div class="agent-icon" style="background:linear-gradient(135deg,#00d4ff,#0066ff);">📊</div>
                         <div>
-                            <div class="agent-name">AGENT 1 — CHART ANALYST</div>
-                            <div class="agent-status">● ANALYZING MARKET STRUCTURE...</div>
+                            <div class="agent-name">{T["agent1_name"]}</div>
+                            <div class="agent-status">{T["agent1_stat"]}</div>
                         </div>
                     </div>
                 </div>
@@ -1081,8 +1197,8 @@ Provide complete technical analysis and directional bias for options trading."""
                     <div class="agent-header">
                         <div class="agent-icon" style="background:linear-gradient(135deg,#00ff88,#00aa55);">🔍</div>
                         <div>
-                            <div class="agent-name">AGENT 2 — CONTRACT SCANNER</div>
-                            <div class="agent-status">● SCANNING Δ > |θ| FILTER...</div>
+                            <div class="agent-name">{T["agent2_name"]}</div>
+                            <div class="agent-status">{T["agent2_stat"]}</div>
                         </div>
                     </div>
                 </div>
@@ -1109,8 +1225,8 @@ Select and rank the top contracts with full financial analysis."""
                     <div class="agent-header">
                         <div class="agent-icon" style="background:linear-gradient(135deg,#ffd700,#ff8800);">🏗️</div>
                         <div>
-                            <div class="agent-name">AGENT 3 — STRATEGY ARCHITECT</div>
-                            <div class="agent-status">● BUILDING COMPOSITE STRATEGIES...</div>
+                            <div class="agent-name">{T["agent3_name"]}</div>
+                            <div class="agent-status">{T["agent3_stat"]}</div>
                         </div>
                     </div>
                 </div>
@@ -1131,15 +1247,11 @@ Include complete P&L table for each strategy."""
                 result3 = call_agent(client, STRATEGY_AGENT_SYSTEM, strategy_msg, output3_container)
                 st.session_state.agent_results['strategy'] = result3
             
-            st.success("✅ All 3 agents completed analysis successfully!")
+            st.success(T["agents_done"])
 
     # ── MAIN TABS ──
     tab1, tab2, tab3, tab4, tab5 = st.tabs([
-        "📊  CHART & MARKET", 
-        "🔗  OPTION CHAIN", 
-        "⚡  FILTERED Δ>|θ|",
-        "🤖  AGENT OUTPUTS",
-        "📐  P&L DIAGRAM"
+        T['tab1'], T['tab2'], T['tab3'], T['tab4'], T['tab5']
     ])
     
     with tab1:
@@ -1147,8 +1259,9 @@ Include complete P&L table for each strategy."""
         
         with col_chart:
             st.markdown('<div class="panel">', unsafe_allow_html=True)
-            st.markdown(f'<div class="panel-header"><span class="panel-title">{symbol} — PRICE ACTION</span><span class="panel-badge badge-cyan">LIVE CHART</span></div>', unsafe_allow_html=True)
-            
+            _ct = T["chart_title"]; _lc = T["live_chart"]
+            st.markdown(f'<div class="panel-header"><span class="panel-title">{symbol} — {_ct}</span><span class="panel-badge badge-cyan">{_lc}</span></div>', unsafe_allow_html=True)
+
             hist_data, info = fetch_market_data(symbol)
             fig_chart = render_price_chart(hist_data, symbol, S)
             st.plotly_chart(fig_chart, use_container_width=True, config={'displayModeBar': False})
@@ -1156,8 +1269,9 @@ Include complete P&L table for each strategy."""
         
         with col_greeks:
             st.markdown('<div class="panel" style="height:580px;">', unsafe_allow_html=True)
-            st.markdown('<div class="panel-header"><span class="panel-title">ATM GREEKS</span><span class="panel-badge badge-gold">LIVE</span></div>', unsafe_allow_html=True)
-            
+            _gt = T["greeks_title"]; _lv = T["live"]
+            st.markdown(f'<div class="panel-header"><span class="panel-title">{_gt}</span><span class="panel-badge badge-gold">{_lv}</span></div>', unsafe_allow_html=True)
+
             if atm_call is not None:
                 bs = BlackScholes()
                 T = dte / 365
@@ -1180,17 +1294,19 @@ Include complete P&L table for each strategy."""
                     """, unsafe_allow_html=True)
                 
                 st.markdown('<hr>', unsafe_allow_html=True)
+                _gmfont = "font-family:'Cairo',sans-serif;" if is_ar else "font-family:'JetBrains Mono',monospace;"
+                _pass_lbl = T['pass_lbl'] if abs(g['delta']) > abs(g['theta']) else T['fail_lbl']
                 st.markdown(f"""
-                <div style="font-family:'JetBrains Mono',monospace; font-size:11px; color:#7a9bbf; margin-top:12px;">
-                <div style="margin-bottom:6px;">ATM STRIKE: <span style="color:#ffd700;">${atm_call['strike']:.0f}</span></div>
-                <div style="margin-bottom:6px;">CALL PRICE: <span style="color:#00ff88;">${atm_call['price']:.2f}</span></div>
-                <div style="margin-bottom:6px;">MAX LOSS: <span style="color:#ff3355;">${atm_call['cost_max_loss']:.0f}</span></div>
-                <div style="margin-bottom:6px;">BREAKEVEN: <span style="color:#00d4ff;">${atm_call['breakeven']:.2f}</span></div>
-                <div style="margin-bottom:6px;">EDGE RATIO: <span style="color:#9945ff;">{abs(g['delta'])/max(abs(g['theta']),0.0001):.2f}x</span></div>
+                <div dir="{T['dir']}" style="{_gmfont} font-size:11px; color:#7a9bbf; margin-top:12px;">
+                <div style="margin-bottom:6px;">{T['atm_strike']}: <span style="color:#ffd700;">${atm_call['strike']:.0f}</span></div>
+                <div style="margin-bottom:6px;">{T['call_price']}: <span style="color:#00ff88;">${atm_call['price']:.2f}</span></div>
+                <div style="margin-bottom:6px;">{T['max_loss']}: <span style="color:#ff3355;">${atm_call['cost_max_loss']:.0f}</span></div>
+                <div style="margin-bottom:6px;">{T['breakeven']}: <span style="color:#00d4ff;">${atm_call['breakeven']:.2f}</span></div>
+                <div style="margin-bottom:6px;">{T['edge_ratio']}: <span style="color:#9945ff;">{abs(g['delta'])/max(abs(g['theta']),0.0001):.2f}x</span></div>
                 <div style="margin-top:10px; padding:8px; background:#00d4ff11; border:1px solid #00d4ff33; border-radius:6px;">
-                    <div style="color:#00d4ff; margin-bottom:4px;">Δ > |θ| CHECK</div>
+                    <div style="color:#00d4ff; margin-bottom:4px;">{T['delta_check']}</div>
                     <div style="color:{'#00ff88' if abs(g['delta']) > abs(g['theta']) else '#ff3355'}; font-size:14px; font-weight:bold;">
-                        {'✓ PASS' if abs(g['delta']) > abs(g['theta']) else '✗ FAIL'}
+                        {_pass_lbl}
                     </div>
                     <div style="color:#7a9bbf; font-size:10px; margin-top:4px;">
                     |Δ| {abs(g['delta']):.4f} {'>' if abs(g['delta']) > abs(g['theta']) else '<'} |θ| {abs(g['theta']):.4f}
@@ -1203,7 +1319,9 @@ Include complete P&L table for each strategy."""
     
     with tab2:
         st.markdown('<div class="panel">', unsafe_allow_html=True)
-        st.markdown('<div class="panel-header"><span class="panel-title">FULL OPTION CHAIN</span><span class="panel-badge badge-cyan">ALL CONTRACTS</span></div>', unsafe_allow_html=True)
+        _cf = "font-family:'Cairo',sans-serif;" if is_ar else ""
+        _chain_all = "الكل" if is_ar else "ALL"
+        st.markdown(f'<div class="panel-header"><span class="panel-title">{T["chain_title"]}</span><span class="panel-badge badge-cyan">{_chain_all}</span></div>', unsafe_allow_html=True)
         
         col_f1, col_f2 = st.columns(2)
         with col_f1:
@@ -1243,19 +1361,16 @@ Include complete P&L table for each strategy."""
             <span class="panel-title">FILTERED CONTRACTS — Δ > |θ|</span>
             <span class="panel-badge badge-green">MATHEMATICAL FILTER</span>
         </div>
-        <div style="font-family:'JetBrains Mono',monospace; font-size:11px; color:#7a9bbf; margin-bottom:16px; 
+        <div style="font-size:11px; color:#7a9bbf; margin-bottom:16px;
                     padding:12px; background:#00ff8811; border:1px solid #00ff8844; border-radius:8px;">
-            <span style="color:#00ff88; font-weight:600;">FILTER CONDITION:</span> |Δ| > |θ|  — 
-            Only contracts where absolute Delta exceeds absolute Theta are selected.
-            This ensures directional exposure outweighs time decay cost.
-            Sorted by Edge Ratio (|Δ| / |θ|) — highest edge first.
+            {T["filter_cond"]}
         </div>
         """, unsafe_allow_html=True)
         
         col_t1, col_t2 = st.columns(2)
         
         with col_t1:
-            st.markdown('<div style="color:#00d4ff; font-family:\'JetBrains Mono\',monospace; font-size:12px; letter-spacing:2px; margin-bottom:8px;">▶ TOP CALLS</div>', unsafe_allow_html=True)
+            st.markdown(f'<div style="color:#00d4ff; font-family:Cairo,sans-serif; font-size:13px; margin-bottom:8px;">{T["top_calls"]}</div>', unsafe_allow_html=True)
             top_calls_disp = filtered_df[filtered_df['type'] == 'CALL'].head(10)
             if len(top_calls_disp) > 0:
                 call_display = top_calls_disp[['strike', 'price', 'cost_max_loss', 'net_profit',
@@ -1271,7 +1386,7 @@ Include complete P&L table for each strategy."""
                 st.info("No calls pass the filter with current parameters.")
         
         with col_t2:
-            st.markdown('<div style="color:#ff3355; font-family:\'JetBrains Mono\',monospace; font-size:12px; letter-spacing:2px; margin-bottom:8px;">▶ TOP PUTS</div>', unsafe_allow_html=True)
+            st.markdown(f'<div style="color:#ff3355; font-family:Cairo,sans-serif; font-size:13px; margin-bottom:8px;">{T["top_puts"]}</div>', unsafe_allow_html=True)
             top_puts_disp = filtered_df[filtered_df['type'] == 'PUT'].head(10)
             if len(top_puts_disp) > 0:
                 put_display = top_puts_disp[['strike', 'price', 'cost_max_loss', 'net_profit',
@@ -1290,32 +1405,33 @@ Include complete P&L table for each strategy."""
         st.markdown('<hr>', unsafe_allow_html=True)
         c1, c2, c3, c4 = st.columns(4)
         with c1:
-            st.metric("Total Passing", f"{total_pass}", f"{pass_rate}% pass rate")
+            st.metric(T["total_pass"], f"{total_pass}")
         with c2:
             avg_edge = filtered_df['edge_ratio'].mean() if len(filtered_df) > 0 else 0
-            st.metric("Avg Edge Ratio", f"{avg_edge:.2f}x")
+            st.metric(T["avg_edge"], f"{avg_edge:.2f}x")
         with c3:
             avg_iv = filtered_df['iv'].mean() if len(filtered_df) > 0 else 0
-            st.metric("Avg IV (Filtered)", f"{avg_iv:.1f}%")
+            st.metric(T["avg_iv"], f"{avg_iv:.1f}%")
         with c4:
             best_edge = filtered_df['edge_ratio'].max() if len(filtered_df) > 0 else 0
-            st.metric("Best Edge Ratio", f"{best_edge:.2f}x")
+            st.metric(T["best_edge"], f"{best_edge:.2f}x")
         
         st.markdown('</div>', unsafe_allow_html=True)
     
     with tab4:
         st.markdown('<div class="panel">', unsafe_allow_html=True)
-        st.markdown('<div class="panel-header"><span class="panel-title">MULTI-AGENT AI OUTPUTS</span><span class="panel-badge badge-purple">AI ANALYSIS</span></div>', unsafe_allow_html=True)
+        _ai_badge = "تحليل ذكاء اصطناعي" if is_ar else "AI ANALYSIS"
+        st.markdown(f'<div class="panel-header"><span class="panel-title">{T["agents_title"]}</span><span class="panel-badge badge-purple">{_ai_badge}</span></div>', unsafe_allow_html=True)
         
         if not any(st.session_state.agent_results.values()):
             st.markdown("""
             <div style="text-align:center; padding:60px 20px; color:#3d5a78;">
                 <div style="font-size:48px; margin-bottom:16px;">🤖</div>
-                <div style="font-family:'Bebas Neue',sans-serif; font-size:28px; letter-spacing:3px; color:#1a2d45; margin-bottom:8px;">
-                    AGENTS STANDING BY
+                <div style="font-family:'Cairo',sans-serif; font-size:24px; color:#1a2d45; margin-bottom:8px;">
+                    {T["stand_by"]}
                 </div>
-                <div style="font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:2px;">
-                    Enter your Anthropic API key and click ⚡ ACTIVATE AGENTS
+                <div style="font-family:'Cairo',sans-serif; font-size:12px;">
+                    {T["enter_key"]}
                 </div>
             </div>
             """, unsafe_allow_html=True)
@@ -1349,18 +1465,19 @@ Include complete P&L table for each strategy."""
     
     with tab5:
         st.markdown('<div class="panel">', unsafe_allow_html=True)
-        st.markdown('<div class="panel-header"><span class="panel-title">P&L DIAGRAM BUILDER</span><span class="panel-badge badge-gold">STRATEGY VISUALIZER</span></div>', unsafe_allow_html=True)
+        _pnl_vis = "مرئي الاستراتيجية" if is_ar else "STRATEGY VISUALIZER"
+        st.markdown(f'<div class="panel-header"><span class="panel-title">{T["pnl_title"]}</span><span class="panel-badge badge-gold">{_pnl_vis}</span></div>', unsafe_allow_html=True)
         
         st.markdown('<p style="font-family:\'JetBrains Mono\',monospace; font-size:11px; color:#7a9bbf;">Build and visualize multi-leg strategies from the filtered contracts:</p>', unsafe_allow_html=True)
         
         col_s1, col_s2 = st.columns(2)
         with col_s1:
-            preset = st.selectbox("Strategy Preset", [
+            preset = st.selectbox(T["preset"], [
                 "Bull Call Spread", "Bear Put Spread", "Long Straddle", 
                 "Iron Condor", "Bull Put Spread", "Custom"
             ])
         with col_s2:
-            width = st.number_input("Spread Width ($)", value=10.0, step=5.0)
+            width = st.number_input(T["width"], value=10.0, step=5.0)
         
         ATM = round(S / 5) * 5
         
@@ -1469,17 +1586,12 @@ Include complete P&L table for each strategy."""
     st.markdown('</div>', unsafe_allow_html=True)
     
     # ── FOOTER ──
-    st.markdown("""
-    <div style="background:#080d14; border-top:1px solid #1a2d45; padding:16px 32px; 
+    st.markdown(f"""
+    <div style="background:#080d14; border-top:1px solid #1a2d45; padding:16px 32px;
                 display:flex; justify-content:space-between; align-items:center;
-                font-family:'JetBrains Mono',monospace; font-size:10px; color:#3d5a78;
-                letter-spacing:1px; margin-top:20px;">
-        <div>QUANTUM OPTIONS INTELLIGENCE v2.0 — MULTI-AGENT AI PLATFORM</div>
-        <div style="display:flex; gap:24px;">
-            <span>⚠️ FOR EDUCATIONAL USE ONLY</span>
-            <span>OPTIONS TRADING INVOLVES SUBSTANTIAL RISK</span>
-            <span>NOT FINANCIAL ADVICE</span>
-        </div>
+                font-family:'Cairo',sans-serif; font-size:11px; color:#3d5a78; margin-top:20px;">
+        <div>{T['footer']}</div>
+        <div>{T['disclaimer']}</div>
     </div>
     """, unsafe_allow_html=True)
 
