@@ -340,7 +340,14 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--s
     
     <div class="chat-msgs" id="chat-msgs">
       <div class="msg sys">
-        <div class="msg-bub">🤖 ذكاء PulseWhisper — سيتم الآن إرسال تنبيهات تلقائية إلى حسابك في تليجرام فور توفر فرصة تداول، مع الحفاظ على سرية معلوماتك.</div>
+        <div class="msg-bub">🤖 <b>خريطة استراتيجيات PulseWhisper:</b>
+🟢 أيرون كوندور → VIX 12–22، سوق عرضي
+🟡 أيرون باترفلاي → VIX 12–18، سوق هادئ
+🔵 كريدت سبريد → VIX 22–30، سوق ذو اتجاه
+🟠 دبل كريدت سبريد → VIX 25–35، اتجاه قوي
+🔴 لا تداول → VIX 35+، مخاطرة عالية
+
+🔔 <i>تنبيهات التليجرام مفعلة لإرسال الإشارات آلياً عند ظهورها، مع الحفاظ على سرية معلوماتك.</i></div>
       </div>
     </div>
     <div class="chat-inp-area">
@@ -614,7 +621,6 @@ function loadSettings(){
 // ═══════════════════════════════════════════════════
 let lastAlertMsg = '';
 async function sendTelegramAlert(sc) {
-  // إرسال رسالة فقط إذا كانت هناك إشارة دخول
   if (sc.signal !== 'TRADE') return;
 
   const stNames = {'IRON_CONDOR':'أيرون كوندور','IRON_BUTTERFLY':'أيرون باترفلاي','CREDIT_SPREAD':'كريدت سبريد','DOUBLE_CREDIT_SPREAD':'دبل سبريد'};
@@ -630,7 +636,6 @@ async function sendTelegramAlert(sc) {
   msg += `💰 *الكريدت المستهدف:* ${sc.credit}\n`;
   msg += `🛑 *إغلاق إجباري:* ${sc.close_ksa}\n`;
 
-  // منع إرسال نفس الرسالة بشكل متكرر
   if (msg === lastAlertMsg) return; 
   lastAlertMsg = msg;
 
@@ -920,7 +925,6 @@ function runScan(){
   updateTickers(sc);
   renderResult(sc,ts);
   
-  // إرسال التنبيه إلى تليجرام في حال وجود فرصة
   sendTelegramAlert(sc);
   
   chatHist.push({role:'user',content:`[SCAN ${ts}] SPX:${spx} VIX:${vix} Dir:${direction} EM:±${em} Regime:${regime} Strategy:${strategy} Signal:${signal} Live:${isLive}`});
@@ -1561,6 +1565,21 @@ function renderAnalytics(){
     }).join('')}
   </div>`;
 }
+
+function logFromSignal(){
+  if(!lastScan) return;
+  switchTab('journal');
+  setTimeout(()=>{
+    prefillFromLastScan();
+    document.getElementById('lf-status').value='OPEN';
+    document.getElementById('panel-journal').scrollTop=0;
+    document.getElementById('lf-msg').textContent='← تمت التعبئة. حدد الكريدت ثم احفظ.';
+    document.getElementById('lf-msg').style.color='var(--accent)';
+  },100);
+}
+
+// Set today's date as default in log form
+document.getElementById('lf-date').value = new Date().toISOString().split('T')[0];
 
 // ═══════════════════════════════════════════════════
 // INIT
