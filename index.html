@@ -234,7 +234,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--s
 /* ── EQUITY CURVE ── */
 .equity-wrap{padding:14px 20px;border-bottom:1px solid var(--border);}
 .equity-title{font-size:11px;font-weight:700;color:var(--muted);margin-bottom:10px;}
-#equity-canvas{width:100%;height:80px;display:block;transform:scaleX(-1);} /* Flipped for RTL */
+#equity-canvas{width:100%;height:80px;display:block;transform:scaleX(-1);}
 
 /* ── DELETE BTN ── */
 .btn-del{background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:14px;padding:2px 6px;border-radius:3px;}
@@ -254,7 +254,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--s
       <div class="live-dot" id="live-dot"></div>
       <span id="live-txt">اضغط جلب + فحص</span>
     </div>
-    <div id="clock">--:-- PST</div>
+    <div id="clock">--:-- بتوقيت السعودية</div>
   </div>
 </div>
 
@@ -263,7 +263,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--s
   <div class="tick" id="t-spx"><div class="t-lbl">SPX</div><div class="t-val" id="tv-spx" style="color:var(--muted)">--</div><div class="t-sub" id="ts-spx">--</div></div>
   <div class="tick" id="t-em"><div class="t-lbl">الحركة المتوقعة</div><div class="t-val" id="tv-em" style="color:var(--muted)">--</div><div class="t-sub">± نقطة اليوم</div></div>
   <div class="tick" id="t-reg"><div class="t-lbl">حالة السوق</div><div class="t-val" id="tv-reg" style="color:var(--muted);font-size:14px;font-family:var(--sans)">--</div><div class="t-sub" id="ts-reg">--</div></div>
-  <div class="tick" id="t-win"><div class="t-lbl">نافذة التداول</div><div class="t-val" id="tv-win" style="color:var(--muted);font-size:13px;font-family:var(--sans)">--</div><div class="t-sub" id="ts-win">بتوقيت PST</div></div>
+  <div class="tick" id="t-win"><div class="t-lbl">نافذة التداول</div><div class="t-val" id="tv-win" style="color:var(--muted);font-size:13px;font-family:var(--sans)">--</div><div class="t-sub" id="ts-win">بتوقيت السعودية</div></div>
 </div>
 
 <div class="status-bar">
@@ -315,31 +315,32 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--s
   </div>
 
   <div class="chat-panel">
-    <div class="chat-hdr"><div class="logo-pulse" style="width:6px;height:6px;"></div>مساعد الاستراتيجيات بالذكاء الاصطناعي</div>
-    <div style="padding:7px 13px;border-bottom:1px solid var(--border);background:var(--bg2);display:flex;align-items:center;gap:8px;">
-      <input id="api-key-inp" type="password" placeholder="ألصق مفتاح Anthropic API هنا (sk-ant-...)" style="flex:1;background:var(--bg3);border:1px solid var(--border2);border-radius:5px;padding:5px 9px;font-family:var(--mono);font-size:12px;color:var(--text);outline:none;direction:ltr;" oninput="saveApiKey(this.value)" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border2)'">
-      <div id="api-status" style="font-size:10px;color:var(--muted);white-space:nowrap;">لا يوجد مفتاح</div>
+    <div class="chat-hdr"><div class="logo-pulse" style="width:6px;height:6px;"></div>مساعد الاستراتيجيات وإعدادات الربط</div>
+    
+    <div style="padding:10px 13px;border-bottom:1px solid var(--border);background:var(--bg2);display:flex;flex-direction:column;gap:8px;">
+      
+      <div style="display:flex;align-items:center;gap:8px;">
+        <input id="api-key-inp" type="password" placeholder="ألصق مفتاح Anthropic API للدردشة (اختياري)" style="flex:1;background:var(--bg3);border:1px solid var(--border2);border-radius:5px;padding:5px 9px;font-family:var(--mono);font-size:11px;color:var(--text);outline:none;direction:ltr;" oninput="saveSettings()" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border2)'">
+      </div>
+      
+      <div style="display:flex; gap:8px;">
+        <input id="tg-token-inp" type="password" placeholder="توكن تليجرام (Telegram Token)" style="flex:1;background:var(--bg3);border:1px solid var(--border2);border-radius:5px;padding:5px 9px;font-family:var(--mono);font-size:11px;color:var(--text);outline:none;direction:ltr;" oninput="saveSettings()" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border2)'">
+        <input id="tg-chat-inp" type="text" placeholder="معرف المحادثة (Chat ID)" style="width:120px;background:var(--bg3);border:1px solid var(--border2);border-radius:5px;padding:5px 9px;font-family:var(--mono);font-size:11px;color:var(--text);outline:none;direction:ltr;" oninput="saveSettings()" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border2)'">
+      </div>
+      
+      <div id="settings-status" style="font-size:10px;color:var(--muted);white-space:nowrap;">في انتظار الإعدادات...</div>
     </div>
+
     <div class="qps">
       <div class="qp" onclick="sq('ما هي أفضل استراتيجية للتداول الآن بناءً على الظروف الحالية؟')">أفضل صفقة الآن؟</div>
       <div class="qp" onclick="sq('أعطني السترايكات الدقيقة للاستراتيجية الموصى بها حالياً.')">هات السترايكات</div>
       <div class="qp" onclick="sq('راجع المفكرة الاقتصادية. هل هناك أحداث مهمة هذا الأسبوع يجب الانتباه لها؟')">المفكرة الاقتصادية</div>
-      <div class="qp" onclick="sq('اشرح الفرق بين أيرون كوندور وكريدت سبريد. متى أستخدم كل منهما؟')">الفرق بين IC و Spread؟</div>
       <div class="qp" onclick="sq('ما هو هدف الربح الدقيق ووقف الخسارة لصفقة اليوم؟')">شروط الخروج</div>
-      <div class="qp" onclick="sq('اشرح لي خطوة بخطوة كيف أنفذ هذه الصفقة في تطبيق التداول.')">طريقة التنفيذ</div>
     </div>
+    
     <div class="chat-msgs" id="chat-msgs">
       <div class="msg sys">
-        <div class="msg-bub">🤖 ذكاء PulseWhisper — أقوم بمسح بيانات SPX و VIX المباشرة، وتحديد حالة السوق، واقتراح أفضل استراتيجية عقود ذات مخاطر محددة.
-
-الاستراتيجيات المتاحة (مخاطر محددة فقط):
-🟢 أيرون كوندور → VIX 12–22، سوق عرضي
-🟡 أيرون باترفلاي → VIX 12–18، سوق هادئ جداً
-🔵 كريدت سبريد → VIX 22–30، سوق ذو اتجاه
-🟠 دبل كريدت سبريد → VIX 25–35، اتجاه قوي
-🔴 لا يوجد تداول → VIX 35+، أيام أحداث حادة
-
-اضغط "جلب + فحص" أو اسألني أي سؤال.</div>
+        <div class="msg-bub">🤖 ذكاء PulseWhisper — سيتم الآن إرسال تنبيهات تلقائية إلى حسابك في تليجرام فور توفر فرصة تداول، مع الحفاظ على سرية معلوماتك.</div>
       </div>
     </div>
     <div class="chat-inp-area">
@@ -534,18 +535,17 @@ let chatHist=[], thinking=false, lastScan=null;
 let liveSpx=null, liveVix=null, liveOpen=null, liveChg=null;
 
 // ═══════════════════════════════════════════════════
-// CLOCK
+// CLOCK (KSA TIME)
 // ═══════════════════════════════════════════════════
 function updateClock(){
-  const p=new Date(new Date().toLocaleString('en-US',{timeZone:'America/Los_Angeles'}));
-  const e=new Date(new Date().toLocaleString('en-US',{timeZone:'America/New_York'}));
-  const f=d=>d.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
-  document.getElementById('clock').textContent=`${f(p)} PST | ${f(e)} ET`;
+  const ksa = new Date(new Date().toLocaleString('en-US',{timeZone:'Asia/Riyadh'}));
+  const f = d => d.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  document.getElementById('clock').textContent = `${f(ksa)} بتوقيت السعودية`;
 }
 setInterval(updateClock,1000);updateClock();
 
 // ═══════════════════════════════════════════════════
-// TIME HELPERS
+// TIME HELPERS (Logic stays ET for market rules)
 // ═══════════════════════════════════════════════════
 function getET(){return new Date(new Date().toLocaleString('en-US',{timeZone:'America/New_York'}));}
 function getETH(){const e=getET();return e.getHours()+e.getMinutes()/60;}
@@ -560,16 +560,104 @@ function getWin(){
   if(h>=15.75) return 'HARD-CLOSE';
   return 'OFF-HOURS';
 }
-function getPSTLbl(w){
+function getKSALbl(w){
   return{
-    PRIMARY:'6:50–8:00 AM ✅',SECONDARY:'9:30–10:30 AM ✅',
-    'PRE-ENTRY':'يفتح 6:50 ص PST',CLOSED:'لا دخول جديد',
-    'HARD-CLOSE':'إغلاق إجباري 12:45','OFF-HOURS':'السوق مغلق'
+    PRIMARY:'4:50–6:00 م ✅',SECONDARY:'7:30–8:30 م ✅',
+    'PRE-ENTRY':'يفتح 4:50 م',CLOSED:'لا دخول جديد',
+    'HARD-CLOSE':'إغلاق إجباري 10:45 م','OFF-HOURS':'السوق مغلق'
   }[w]||w;
 }
 
 // ═══════════════════════════════════════════════════
-// LIVE DATA FETCH — Yahoo Finance (works when hosted outside Claude)
+// SECURE SETTINGS (LocalStorage)
+// ═══════════════════════════════════════════════════
+function saveSettings(){
+  const k = document.getElementById('api-key-inp').value;
+  const tgToken = document.getElementById('tg-token-inp').value;
+  const tgChat = document.getElementById('tg-chat-inp').value;
+  
+  localStorage.setItem('pw_api_key', k);
+  localStorage.setItem('pw_tg_token', tgToken);
+  localStorage.setItem('pw_tg_chat', tgChat);
+  
+  const stat = document.getElementById('settings-status');
+  if(tgToken && tgChat) {
+    stat.textContent = '✓ الإعدادات محفوظة محلياً بأمان';
+    stat.style.color = 'var(--green)';
+  } else {
+    stat.textContent = 'إعدادات ناقصة';
+    stat.style.color = 'var(--yellow)';
+  }
+}
+
+function loadSettings(){
+  const k = localStorage.getItem('pw_api_key')||'';
+  const tgToken = localStorage.getItem('pw_tg_token')||'';
+  const tgChat = localStorage.getItem('pw_tg_chat')||'';
+  
+  document.getElementById('api-key-inp').value = k;
+  document.getElementById('tg-token-inp').value = tgToken;
+  document.getElementById('tg-chat-inp').value = tgChat;
+  
+  const stat = document.getElementById('settings-status');
+  if(tgToken && tgChat) {
+    stat.textContent = '✓ الإعدادات محملة بأمان';
+    stat.style.color = 'var(--green)';
+  } else {
+    stat.textContent = 'أدخل التوكن والـ Chat ID لتفعيل التنبيهات';
+    stat.style.color = 'var(--muted)';
+  }
+}
+
+// ═══════════════════════════════════════════════════
+// TELEGRAM ALERTS
+// ═══════════════════════════════════════════════════
+let lastAlertMsg = '';
+async function sendTelegramAlert(sc) {
+  // إرسال رسالة فقط إذا كانت هناك إشارة دخول
+  if (sc.signal !== 'TRADE') return;
+
+  const stNames = {'IRON_CONDOR':'أيرون كوندور','IRON_BUTTERFLY':'أيرون باترفلاي','CREDIT_SPREAD':'كريدت سبريد','DOUBLE_CREDIT_SPREAD':'دبل سبريد'};
+  const stratName = stNames[sc.strategy] || sc.strategy;
+
+  let msg = `🚨 *فرصة تداول جديدة: ${stratName}* 🚨\n\n`;
+  msg += `📈 *SPX:* ${sc.spx?.toLocaleString()} | *VIX:* ${sc.vix}\n\n`;
+  msg += `🎯 *السترايكات:*\n`;
+  if(sc.l1) msg += `- ${sc.l1_lbl}: ${sc.l1}\n`;
+  if(sc.l2) msg += `- ${sc.l2_lbl}: ${sc.l2}\n`;
+  if(sc.l3) msg += `- ${sc.l3_lbl}: ${sc.l3}\n`;
+  if(sc.l4) msg += `- ${sc.l4_lbl}: ${sc.l4}\n\n`;
+  msg += `💰 *الكريدت المستهدف:* ${sc.credit}\n`;
+  msg += `🛑 *إغلاق إجباري:* ${sc.close_ksa}\n`;
+
+  // منع إرسال نفس الرسالة بشكل متكرر
+  if (msg === lastAlertMsg) return; 
+  lastAlertMsg = msg;
+
+  const token = localStorage.getItem('pw_tg_token');
+  const chatId = localStorage.getItem('pw_tg_chat');
+  
+  if (!token || !chatId) {
+    console.log("Telegram settings missing. Alert not sent.");
+    return;
+  }
+
+  const url = `https://api.telegram.org/bot${token}/sendMessage`;
+
+  try {
+    await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chat_id: chatId, text: msg, parse_mode: 'Markdown' })
+    });
+    console.log("Telegram alert sent successfully.");
+  } catch (e) {
+    console.error('Telegram Error:', e);
+  }
+}
+
+// ═══════════════════════════════════════════════════
+// LIVE DATA FETCH
 // ═══════════════════════════════════════════════════
 async function fetchLiveData(){
   const dot=document.getElementById('live-dot');
@@ -579,7 +667,6 @@ async function fetchLiveData(){
 
   let gotSpx=false, gotVix=false;
 
-  // Multiple data source strategies for GitHub Pages compatibility
   const proxyBase = 'https://api.allorigins.win/raw?url=';
 
   async function tryFetch(url, timeout=8000){
@@ -596,7 +683,6 @@ async function fetchLiveData(){
     }
   }
 
-  // Strategy 1: Yahoo Finance v8 API via proxy
   try{
     const spxUrl = 'https://query1.finance.yahoo.com/v8/finance/chart/%5EGSPC?interval=1d&range=5d';
     const d = await tryFetch(spxUrl);
@@ -613,7 +699,6 @@ async function fetchLiveData(){
       if(liveSpx){
         document.getElementById('inp-spx').value = Math.round(liveSpx);
         gotSpx = true;
-        // Auto-detect direction
         if(liveOpen){
           const chgFromOpen = ((liveSpx - liveOpen) / liveOpen) * 100;
           const dirSel = document.getElementById('inp-dir');
@@ -625,7 +710,6 @@ async function fetchLiveData(){
     }
   } catch(e){ console.warn('SPX v8 failed:', e.message); }
 
-  // Strategy 2: Yahoo Finance v7 quote API (fallback)
   if(!gotSpx){
     try{
       const spxUrl2 = 'https://query1.finance.yahoo.com/v7/finance/quote?symbols=%5EGSPC';
@@ -647,7 +731,6 @@ async function fetchLiveData(){
     } catch(e){ console.warn('SPX v7 failed:', e.message); }
   }
 
-  // Fetch VIX
   try{
     const vixUrl = 'https://query1.finance.yahoo.com/v8/finance/chart/%5EVIX?interval=1d&range=1d';
     const d3 = await tryFetch(vixUrl);
@@ -659,7 +742,6 @@ async function fetchLiveData(){
     }
   } catch(e){ console.warn('VIX failed:', e.message); }
 
-  // VIX fallback via v7
   if(!gotVix){
     try{
       const vixUrl2 = 'https://query1.finance.yahoo.com/v7/finance/quote?symbols=%5EVIX';
@@ -695,7 +777,7 @@ async function fetchLiveData(){
 }
 
 // ═══════════════════════════════════════════════════
-// FETCH + SCAN (main entry point)
+// FETCH + SCAN 
 // ═══════════════════════════════════════════════════
 async function fetchAndScan(){
   const btn=document.getElementById('scan-btn');
@@ -716,27 +798,24 @@ async function fetchAndScan(){
 }
 
 // ═══════════════════════════════════════════════════
-// CORE SCAN — pure local computation
+// CORE SCAN 
 // ═══════════════════════════════════════════════════
 function runScan(){
-  const et=getET();
-  const ts=et.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
-  const win=getWin();
+  const ksa = new Date(new Date().toLocaleString('en-US',{timeZone:'Asia/Riyadh'}));
+  const ts = ksa.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
+  const win = getWin();
   updateWinTick(win);
 
-  // Read values (live or manual)
   const spx=parseFloat(document.getElementById('inp-spx').value)||6506;
   const vix=parseFloat(document.getElementById('inp-vix').value)||24.5;
   const direction=document.getElementById('inp-dir').value||'FLAT';
   const isLive=liveSpx!==null&&liveVix!==null;
 
-  // Computed
   const em=Math.round(spx*(vix/100)/15.87);
   const r5=Math.round(spx/5)*5;
   const vixPass=vix<35;
   const winPass=win==='PRIMARY'||win==='SECONDARY';
 
-  // Regime + strategy
   let regime,strategy,strat_why;
   if(vix>=35){
     regime='DANGER';strategy='NO_TRADE';
@@ -758,7 +837,6 @@ function runScan(){
     strat_why=`VIX ${vix.toFixed(1)} منخفض جداً، سوق هادئ → أيرون باترفلاي ATM. لتحصيل أعلى كريدت ممكن.`;
   }
 
-  // Strikes
   let l1=null,l2=null,l3=null,l4=null;
   let l1_lbl='',l2_lbl='',l3_lbl=null,l4_lbl=null;
   let pzone=null,pzone_w=null,expiry='0DTE — اليوم (SPXW PM)',wing='5 نقاط';
@@ -813,15 +891,14 @@ function runScan(){
     stopStr='إغلاق السبريد إذا الخسارة = 2× الكريدت الخاص به';
   }
 
-  // Signal
   let signal, sig_why;
   if(strategy==='NO_TRADE'){
     signal='NO_TRADE'; sig_why='VIX مرتفع جداً — احفظ رأس مالك. افحص مجدداً غداً.';
   } else if(!winPass){
     const msg={
-      'PRE-ENTRY':'يفتح السوق الساعة 6:50 ص بتوقيت PST. عد لاحقاً.',
+      'PRE-ENTRY':'يفتح السوق الساعة 4:50 م. عد لاحقاً.',
       CLOSED:'نافذة الدخول مغلقة. الجلسة القادمة غداً.',
-      'HARD-CLOSE':'أغلق جميع الصفقات فوراً! 12:45 م توقيت الإغلاق الإجباري.',
+      'HARD-CLOSE':'أغلق جميع الصفقات فوراً! 10:45 م توقيت الإغلاق الإجباري.',
       'OFF-HOURS':'السوق مغلق الآن.'
     };
     signal='WAIT'; sig_why=msg[win]||'خارج نافذة التداول المسموحة.';
@@ -837,14 +914,18 @@ function runScan(){
     l1_lbl,l1,l2_lbl,l2,l3_lbl:l3_lbl||null,l3:l3||null,
     l4_lbl:l4_lbl||null,l4:l4||null,
     pzone,pzone_w,expiry,credit,risk,profit_tgt,
-    stop:stopStr,close_pst:'12:45 PM PST',wing};
+    stop:stopStr,close_ksa:'10:45 مساءً',wing};
 
   lastScan=sc;
   updateTickers(sc);
   renderResult(sc,ts);
+  
+  // إرسال التنبيه إلى تليجرام في حال وجود فرصة
+  sendTelegramAlert(sc);
+  
   chatHist.push({role:'user',content:`[SCAN ${ts}] SPX:${spx} VIX:${vix} Dir:${direction} EM:±${em} Regime:${regime} Strategy:${strategy} Signal:${signal} Live:${isLive}`});
   chatHist.push({role:'assistant',content:`فحص: ${regime} → ${strategy} → ${signal}. ${sig_why}`});
-  document.getElementById('scan-status').textContent=`آخر فحص: ${ts} ET ${isLive?'● مباشر':'○ يدوي'}`;
+  document.getElementById('scan-status').textContent=`آخر فحص: ${ts} بتوقيت السعودية ${isLive?'● مباشر':'○ يدوي'}`;
 }
 
 // ═══════════════════════════════════════════════════
@@ -882,7 +963,7 @@ function renderResult(sc,ts){
 
   const el=document.createElement('div');
   el.className=`le ${lc}`;
-  el.innerHTML=`<div class="l-time">${ts} ET</div><div class="l-title">${icon} ${title}</div><div class="l-body">${body}</div>${card}`;
+  el.innerHTML=`<div class="l-time">${ts} بتوقيت السعودية</div><div class="l-title">${icon} ${title}</div><div class="l-body">${body}</div>${card}`;
   const log=document.getElementById('scan-log');
   log.appendChild(el);
   el.scrollIntoView({behavior:'smooth',block:'end'});
@@ -928,7 +1009,7 @@ function buildCard(sc,sm){
     <div class="tr"><span class="tk">أقصى مخاطرة للعقد</span><span class="tv-r" style="direction:ltr;">${sc.risk}</span></div>
     <div class="tr" style="border-top:1px solid rgba(0,200,120,.15);margin-top:3px;padding-top:5px;"><span class="tk">✅ جني الربح عند</span><span class="tv-g">${sc.profit_tgt}</span></div>
     <div class="tr"><span class="tk">🛑 وقف الخسارة عند</span><span class="tv-r">${sc.stop}</span></div>
-    <div class="tr"><span class="tk">⏰ الإغلاق الإجباري PST</span><span class="tv-t" style="direction:ltr;">${sc.close_pst} — بلا استثناء</span></div>
+    <div class="tr"><span class="tk">⏰ الإغلاق الإجباري</span><span class="tv-t" style="direction:ltr;">${sc.close_ksa} — بلا استثناء</span></div>
     <div class="why"><div class="why-t">لماذا هذه الاستراتيجية اليوم؟</div><div class="why-b">${sc.strat_why}</div></div>
     <div class="onote">نوع الأمر: <strong style="color:#fff">LIMIT بصافي الكريدت (Mid price)</strong><br>لم يتنفذ خلال 3 دقائق؟ حرك السعر 0.10$ تجاه Ask</div>
     <div style="margin-top:9px;text-align:center;">
@@ -1001,7 +1082,7 @@ function updateWinTick(w){
   const good=w==='PRIMARY'||w==='SECONDARY';
   wv.textContent=w;
   wv.style.color=good?'var(--green)':w==='PRE-ENTRY'?'var(--yellow)':'var(--red)';
-  document.getElementById('ts-win').textContent=getPSTLbl(w);
+  document.getElementById('ts-win').textContent=getKSALbl(w);
   wt.className=`tick ${good?'pass':w==='PRE-ENTRY'?'warn':'fail'}`;
 }
 
@@ -1009,10 +1090,11 @@ function updateWinTick(w){
 // LOG + AUTO-SCAN
 // ═══════════════════════════════════════════════════
 function addLog(cls,title,body){
-  const t=getET().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
+  const ksa = new Date(new Date().toLocaleString('en-US',{timeZone:'Asia/Riyadh'}));
+  const t = ksa.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
   const el=document.createElement('div');
   el.className=`le ${cls}`;
-  el.innerHTML=`<div class="l-time">${t} ET</div><div class="l-title">${title}</div><div class="l-body">${body}</div>`;
+  el.innerHTML=`<div class="l-time">${t} بتوقيت السعودية</div><div class="l-title">${title}</div><div class="l-body">${body}</div>`;
   document.getElementById('scan-log').appendChild(el);
   el.scrollIntoView({behavior:'smooth',block:'end'});
 }
@@ -1069,27 +1151,9 @@ function showTyping(){
 }
 function rmTyping(){const e=document.getElementById('typ');if(e)e.remove();}
 
-function saveApiKey(key){
-  if(key.startsWith('sk-ant-')||key.startsWith('sk-')){
-    localStorage.setItem('pw_api_key', key);
-    document.getElementById('api-status').textContent='✓ تم الحفظ';
-    document.getElementById('api-status').style.color='var(--green)';
-  } else if(key.length > 0){
-    document.getElementById('api-status').textContent='صيغة المفتاح خاطئة';
-    document.getElementById('api-status').style.color='var(--red)';
-  } else {
-    document.getElementById('api-status').textContent='لا يوجد مفتاح';
-    document.getElementById('api-status').style.color='var(--muted)';
-  }
-}
+// [DEPRECATED] - Kept for backwards compatibility just in case, logic moved to loadSettings()
 function loadApiKey(){
-  const k = localStorage.getItem('pw_api_key')||'';
-  if(k){
-    document.getElementById('api-key-inp').value=k;
-    document.getElementById('api-status').textContent='✓ تم التحميل';
-    document.getElementById('api-status').style.color='var(--green)';
-  }
-  return k;
+  return localStorage.getItem('pw_api_key')||'';
 }
 function getApiKey(){
   return document.getElementById('api-key-inp').value || localStorage.getItem('pw_api_key') || '';
@@ -1101,7 +1165,7 @@ async function askAI(msg){
   const ds=et.toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
   const ts=et.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
 
-  const sys=`You are PulseWhisper AI — professional SPX options strategy assistant for Jay, a swing trader in PST. Reply in Arabic.
+  const sys=`You are PulseWhisper AI — professional SPX options strategy assistant for Jay, a swing trader. Reply in Arabic.
 
 RULES — never violate:
 1. Defined risk ONLY. No naked positions ever.
@@ -1169,7 +1233,7 @@ function switchTab(tab){
 }
 
 // ═══════════════════════════════════════════════════
-// TRADE JOURNAL — localStorage persistence
+// TRADE JOURNAL 
 // ═══════════════════════════════════════════════════
 function getTrades(){
   try{ return JSON.parse(localStorage.getItem('pw_trades')||'[]'); }
@@ -1180,9 +1244,6 @@ function saveTrades(trades){
 }
 
 function calcPnl(trade){
-  // P&L = (credit - close) * contracts * 100
-  // if EXPIRED, close = 0 (expired worthless = full credit)
-  // if OPEN, no P&L yet
   if(trade.status==='OPEN') return null;
   const closePrice = trade.status==='EXPIRED' ? 0 : (parseFloat(trade.closePrice)||0);
   const credit = parseFloat(trade.credit)||0;
@@ -1218,10 +1279,9 @@ function logTrade(){
   };
 
   const trades = getTrades();
-  trades.unshift(trade); // newest first
+  trades.unshift(trade);
   saveTrades(trades);
 
-  // Clear form
   document.getElementById('lf-credit').value='';
   document.getElementById('lf-close').value='';
   document.getElementById('lf-notes').value='';
@@ -1275,7 +1335,6 @@ function updateTradeStatus(id){
 function renderJournal(){
   const trades = getTrades();
 
-  // Calculate stats
   const closed = trades.filter(t=>t.status!=='OPEN');
   const wins = closed.filter(t=>{const p=calcPnl(t);return p!==null&&p>0;});
   const losses = closed.filter(t=>{const p=calcPnl(t);return p!==null&&p<0;});
@@ -1284,7 +1343,6 @@ function renderJournal(){
   const avgLoss = losses.length ? losses.reduce((s,t)=>s+(calcPnl(t)||0),0)/losses.length : 0;
   const wr = closed.length ? Math.round((wins.length/closed.length)*100) : 0;
 
-  // Update stats cards
   document.getElementById('j-total').textContent = trades.length;
   document.getElementById('j-wr').textContent = closed.length ? `${wr}%` : '--%';
   document.getElementById('j-wr').style.color = wr>=70?'var(--green)':wr>=50?'var(--accent)':'var(--red)';
@@ -1295,10 +1353,8 @@ function renderJournal(){
   document.getElementById('j-avg-win').textContent = `+$${Math.round(avgWin)}`;
   document.getElementById('j-avg-loss').textContent = `$${Math.round(avgLoss)}`;
 
-  // Draw equity curve
   drawEquityCurve(trades);
 
-  // Render table
   const tbody = document.getElementById('trade-tbody');
   if(trades.length===0){
     tbody.innerHTML='<tr><td colspan="10" class="no-trades">لم يتم تسجيل أي صفقات بعد.</td></tr>';
@@ -1361,7 +1417,6 @@ function drawEquityCurve(trades){
   const toX=(i)=> (i/(points.length-1))*W;
   const toY=(v)=> H-8 - ((v-minV)/range)*(H-16);
 
-  // Fill
   ctx.beginPath();
   ctx.moveTo(toX(0),H);
   points.forEach((v,i)=>ctx.lineTo(toX(i),toY(v)));
@@ -1375,14 +1430,12 @@ function drawEquityCurve(trades){
   ctx.fillStyle=grad;
   ctx.fill();
 
-  // Line
   ctx.beginPath();
   ctx.strokeStyle=lastPnl>=0?'#00c878':'#ff4757';
   ctx.lineWidth=1.5;
   points.forEach((v,i)=>i===0?ctx.moveTo(toX(i),toY(v)):ctx.lineTo(toX(i),toY(v)));
   ctx.stroke();
 
-  // Zero line
   if(minV<0&&maxV>0){
     const zeroY=toY(0);
     ctx.beginPath();
@@ -1409,7 +1462,6 @@ function renderAnalytics(){
     return;
   }
 
-  // ── By Strategy ──
   const byStrat={};
   closed.forEach(t=>{
     const s=t.strategy||'UNKNOWN';
@@ -1428,7 +1480,6 @@ function renderAnalytics(){
     </div>`;
   }).join('');
 
-  // ── By Regime ──
   const byReg={};
   closed.forEach(t=>{
     const r=t.regime||'UNKNOWN';
@@ -1448,7 +1499,6 @@ function renderAnalytics(){
     </div>`;
   }).join('');
 
-  // ── By VIX Bucket ──
   const vixBuckets={'12-18':[],'18-22':[],'22-26':[],'26-30':[],'30+':[]};
   closed.forEach(t=>{
     const v=parseFloat(t.vix)||0;
@@ -1477,7 +1527,6 @@ function renderAnalytics(){
     </div>`;
   }).join('')||'<div style="color:var(--muted);font-size:12px;">أدخل قيمة VIX عند تسجيل الصفقات.</div>';
 
-  // ── Streak ──
   const recent=[...closed].slice(0,10);
   const streakHTML=recent.map(t=>{
     const p=calcPnl(t)||0;
@@ -1492,7 +1541,6 @@ function renderAnalytics(){
     <div style="font-size:12px;color:var(--muted2);">السلسلة الحالية: <strong style="color:${streakType==='W'?'var(--green)':'var(--red)'}">${streak} ${streakType==='W'?'صفقات ربح':'صفقات خسارة'}</strong> متتالية</div>
     <div style="font-size:11px;color:var(--muted);margin-top:4px;">${streakType==='L'&&streak>=3?'⚠ 3 خسائر متتالية — توقف لتقييم الأداء':''}${streakType==='W'&&streak>=5?'🔥 أداء ممتاز — حافظ على انضباطك ولا تزد حجم المخاطرة':''}` + `</div>`;
 
-  // ── Monthly ──
   const monthly={};
   closed.forEach(t=>{
     const m=t.date?t.date.slice(0,7):'غير معروف';
@@ -1514,21 +1562,6 @@ function renderAnalytics(){
   </div>`;
 }
 
-function logFromSignal(){
-  if(!lastScan) return;
-  switchTab('journal');
-  setTimeout(()=>{
-    prefillFromLastScan();
-    document.getElementById('lf-status').value='OPEN';
-    document.getElementById('panel-journal').scrollTop=0;
-    document.getElementById('lf-msg').textContent='← تمت التعبئة. حدد الكريدت ثم احفظ.';
-    document.getElementById('lf-msg').style.color='var(--accent)';
-  },100);
-}
-
-// Set today's date as default in log form
-document.getElementById('lf-date').value = new Date().toISOString().split('T')[0];
-
 // ═══════════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════════
@@ -1537,10 +1570,9 @@ const md=document.getElementById('mkt-dot'),mt=document.getElementById('mkt-txt'
 if(mktOpen()){md.className='sd green';mt.textContent='السوق مفتوح';}
 else{md.className='sd gray';mt.textContent='السوق مغلق';}
 
-// Load saved API key
-loadApiKey();
+// تحميل الإعدادات من المتصفح (المفتاح ورقم التليجرام)
+loadSettings();
 
-// Auto-fetch on load if market is open
 if(mktOpen()){
   document.getElementById('live-txt').textContent='جاري الجلب الآلي...';
   fetchAndScan();
